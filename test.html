@@ -3,7 +3,9 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>EditableGrid - Minimal demo - Attaching grid to an HTML table</title>
+		<title>Schedule Me</title>
+		
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		
@@ -25,7 +27,9 @@
 			table.testgrid th { background: #E5E5E5; text-align: left; }
 			input.invalid { background: red; color: #FDFDFD; }
 			
-			td { height: 20px; width: 100px;}
+			td{ height: 20px; width: 100px;}
+			td.selected {background-color: red;}
+			td.tempSelected {background-color: red; opacity: .5}
 			
 			#eventForm {
 				display: none;
@@ -34,6 +38,20 @@
 				position: absolute;
 				background-color: white;
 			}
+			
+			#popupForm {
+				display: none;
+				position:fixed;
+				top: 50%;
+				left: 50%;
+				width:30em;
+				height:18em;
+				margin-top: -9em; /*set to a negative number 1/2 of your height*/
+				margin-left: -15em; /*set to a negative number 1/2 of your width*/
+				border: 1px solid #ccc;
+				background-color: #f3f3f3;
+			}
+
 		</style>
 		
 		<script>
@@ -61,6 +79,7 @@
 		
 		<script>
 		function displayForm() {
+			setDefaultForm();
 			var form = document.getElementById("eventForm");
 			form.style.display = "block";
 		}
@@ -94,6 +113,7 @@
 			for (i=0; i<(endCell-startCell); i++) {
 				var cell = parseInt(startCell) + i; 
 				document.getElementById(cell).innerHTML = eventName;
+				document.getElementById(cell).classList.add('selected');
 			}
 			
 			//Can be used to post data to external database
@@ -109,18 +129,170 @@
 		}
 		</script>
 		
+		<script>
+		function setDefaultForm() {
+			document.getElementById('Form').reset();
+			document.getElementById('startDate').valueAsDate = new Date();
+			document.getElementById('endDate').valueAsDate = new Date();
+		}
+		</script>
+		
+		<script>
+		function pdisplayForm() {
+			var form = document.getElementById("popupForm");
+			form.style.display = "block";
+			//TODO Change to put on date user selected
+			document.getElementById('pstartDate').valueAsDate = new Date();
+			document.getElementById('pendDate').valueAsDate = new Date();
+		}
+		</script>
+		
+		<script>
+		function phideForm() {
+			var form = document.getElementById("popupForm");
+			form.style.display = "none";
+			document.getElementById('pForm').reset();
+			document.getElementById('pstartDate').valueAsDate = new Date();
+			document.getElementById('pendDate').valueAsDate = new Date();
+			for (i=1; i<=336; i++) { 
+				document.getElementById(i).classList.remove('tempSelected');
+			 }
+		}
+		</script>
+		
+		<script>
+		function pSubForm (){
+			var form = document.getElementById("popupForm");
+			form.style.display = "none";
+			for (i=1; i<=336; i++) { 
+				document.getElementById(i).classList.remove('tempSelected');
+			 }
+			
+			var data = $('#pForm').serializeArray();
+			var startTime = data[0].value;
+			var startDate = data[1].value;
+			startDate = new Date(startDate);
+			//The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
+			startDate = (startDate.getDay()+1)%7;
+			var endTime = data[2].value;
+			var endDate = data[3].value;
+			endDate = new Date(endDate);
+			endDate = (endDate.getDay()+1)%7;
+			var eventName = data[4].value;
+			var startCell = parseInt(startTime) + (48 * startDate);
+			var endCell = parseInt(endTime) + (48 * endDate);
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i; 
+				document.getElementById(cell).innerHTML = eventName;
+				document.getElementById(cell).classList.add('selected');
+			}
+			
+			//Can be used to post data to external database
+			/*$.ajax({
+				url:'https://requestb.in/18tll211',
+				type:'post',
+				data:$('#Form').serializeArray(),
+				success:function(){
+					alert("worked");
+				}
+			});*/
+			
+		}
+		</script>
+		
+		<script>
+		$(function () {
+		//#TODO change the default date based on selection
+		  var isMouseDown = false;
+		  var firstCell = 0;
+		  var cellColumn = 0;
+		  var lastCell = 0;
+		  var firstCellChanged = false;
+		  var lastCellChanged = false;
+		  $("#htmlgrid td")
+			.mousedown(function () {
+			  isMouseDown = true;
+			  firstCell = $(this).attr('id');
+			  firstCell = parseInt(firstCell);
+			  cellColumn = parseInt((firstCell-1)/48);
+			  lastCell = parseInt(firstCell);
+			  $(this).toggleClass("tempSelected");
+			  return false; // prevent text selection
+			})
+			.mouseover(function () {
+			  if (isMouseDown) {
+				var currentCell = parseInt($(this).attr('id'));
+				if (parseInt((currentCell-1)/48) == cellColumn) {
+					if (currentCell < firstCell) {
+						$(this).addClass("tempSelected");
+						firstCell = currentCell;
+						firstCellChanged = true;
+						lastCellChanged = false;
+						for (i=0; i<=(lastCell-firstCell); i++) {
+							var cell = parseInt(firstCell) + i; 
+							document.getElementById(cell).classList.add('tempSelected');
+						}
+					}
+					else if((currentCell > firstCell) && (currentCell <= lastCell) && (currentCell-1 == firstCell) && (firstCellChanged)) {
+						$("#"+firstCell).removeClass("tempSelected");
+						firstCell = currentCell;
+						firstCellChanged = true;
+						lastCellChanged = false;
+					}
+					else if((currentCell >= firstCell) && (currentCell < lastCell) && (currentCell+1 == lastCell) &&  (lastCellChanged)) {
+						$("#"+lastCell).removeClass("tempSelected");
+						lastCell = currentCell;
+						firstCellChanged = false;
+						lastCellChanged = true;
+					}
+					else if(currentCell > lastCell) {
+						$(this).addClass("tempSelected");
+						lastCell = currentCell;
+						firstCellChanged = false;
+						lastCellChanged = true;
+						for (i=0; i<=(lastCell-firstCell); i++) {
+							var cell = parseInt(firstCell) + i; 
+							document.getElementById(cell).classList.add('tempSelected');
+						}
+					}
+				}
+			  }
+			});
+		  
+		  $("#htmlgrid td")
+			.mouseup(function () {
+			  pdisplayForm();
+			  document.getElementById("pstartTime").value = (firstCell%48);
+			  document.getElementById("pendTime").value = ((lastCell+1)%48);
+			  if (firstCell%48 == 0) {
+				document.getElementById("pstartTime").value = "48";
+			  }
+			  if ((lastCell%48+1) == 0) {
+				document.getElementById("pendTime").value = "48";
+			  }
+			
+			  firstCellChanged = false;
+			  lastCellChanged = false;
+			  isMouseDown = false;
+			  firstCell = 0;
+			  cellColumn = 0;
+			  lastCell = 0;
+			  //TODO add popup instead of displayForm, make temp selected stay until form is dealt with
+			});
+		});
+		</script>
+		
 	</head>
 	
 	<body>
-		<h1>EditableGrid - Minimal Demo - Attaching grid to an HTML table - <a href="../index.html">Back to menu</a></h1>
-		<p id="test"></p>
+		<h1>Schedule Me</h1>
 		<p1> 
 			<button type="button" onclick="displayForm()"> Make new event </button>
 			<div id="eventForm">
 				<form id="Form">
 					Start Time:<br>
 					<!-- <input type="time" name="startTime"> -->
-					<select name="startTime">
+					<select name="startTime" id="startTime">
 						<option value="1">12:00AM</option>
 						<option value="2">12:30AM</option>
 						<option value="3">1:00AM</option>
@@ -169,10 +341,10 @@
 						<option value="46">10:30PM</option>
 						<option value="47">11:00PM</option>
 						<option value="48">11:30PM</option>
-					<input type="date" name="startDate">
+					<input type="date" name="startDate" id="startDate">
 					<br>
 					End Time:<br>
-					<select name="endTime">
+					<select name="endTime" id="endTime">
 						<option value="1">12:00AM</option>
 						<option value="2">12:30AM</option>
 						<option value="3">1:00AM</option>
@@ -221,7 +393,7 @@
 						<option value="46">10:30PM</option>
 						<option value="47">11:00PM</option>
 						<option value="48">11:30PM</option>
-					<input type="date" name="endDate">
+					<input type="date" name="endDate" id="endDate">
 					<br>
 					Event Name: <br>
 					<input type="text" name="eventName">
@@ -235,6 +407,127 @@
 					<input type="button" value="Submit" onclick="SubForm()">
 				</form>
 				<button type="button" onclick="hideForm()"> Cancel </button>
+			</div>
+			
+			<div id="popupForm">
+				<form id="pForm">
+					Start Time:<br>
+					<!-- <input type="time" name="startTime"> -->
+					<select name="pstartTime" id="pstartTime">
+						<option value="1">12:00AM</option>
+						<option value="2">12:30AM</option>
+						<option value="3">1:00AM</option>
+						<option value="4">1:30AM</option>
+						<option value="5">2:00AM</option>
+						<option value="6">2:30AM</option>
+						<option value="7">3:00AM</option>
+						<option value="8">3:30AM</option>
+						<option value="9">4:00AM</option>
+						<option value="10">4:30AM</option>
+						<option value="11">5:00AM</option>
+						<option value="12">5:30AM</option>
+						<option value="13">6:00AM</option>
+						<option value="14">6:30AM</option>
+						<option value="15">7:00AM</option>
+						<option value="16">7:30AM</option>
+						<option value="17">8:00AM</option>
+						<option value="18">8:30AM</option>
+						<option value="19">9:00AM</option>
+						<option value="20">9:30AM</option>
+						<option value="21">10:00AM</option>
+						<option value="22">10:30AM</option>
+						<option value="23">11:00AM</option>
+						<option value="24">11:30AM</option>
+						<option value="25">12:00PM</option>
+						<option value="26">12:30PM</option>
+						<option value="27">1:00PM</option>
+						<option value="28">1:30PM</option>
+						<option value="29">2:00PM</option>
+						<option value="30">2:30PM</option>
+						<option value="31">3:00PM</option>
+						<option value="32">3:30PM</option>
+						<option value="33">4:00PM</option>
+						<option value="34">4:30PM</option>
+						<option value="35">5:00PM</option>
+						<option value="36">5:30PM</option>
+						<option value="37">6:00PM</option>
+						<option value="38">6:30PM</option>
+						<option value="39">7:00PM</option>
+						<option value="40">7:30PM</option>
+						<option value="41">8:00PM</option>
+						<option value="42">8:30PM</option>
+						<option value="43">9:00PM</option>
+						<option value="44">9:30PM</option>
+						<option value="45">10:00PM</option>
+						<option value="46">10:30PM</option>
+						<option value="47">11:00PM</option>
+						<option value="48">11:30PM</option>
+					<input type="date" name="pstartDate" id="pstartDate">
+					<br>
+					End Time:<br>
+					<select name="pendTime" id="pendTime">
+						<option value="1">12:00AM</option>
+						<option value="2">12:30AM</option>
+						<option value="3">1:00AM</option>
+						<option value="4">1:30AM</option>
+						<option value="5">2:00AM</option>
+						<option value="6">2:30AM</option>
+						<option value="7">3:00AM</option>
+						<option value="8">3:30AM</option>
+						<option value="9">4:00AM</option>
+						<option value="10">4:30AM</option>
+						<option value="11">5:00AM</option>
+						<option value="12">5:30AM</option>
+						<option value="13">6:00AM</option>
+						<option value="14">6:30AM</option>
+						<option value="15">7:00AM</option>
+						<option value="16">7:30AM</option>
+						<option value="17">8:00AM</option>
+						<option value="18">8:30AM</option>
+						<option value="19">9:00AM</option>
+						<option value="20">9:30AM</option>
+						<option value="21">10:00AM</option>
+						<option value="22">10:30AM</option>
+						<option value="23">11:00AM</option>
+						<option value="24">11:30AM</option>
+						<option value="25">12:00PM</option>
+						<option value="26">12:30PM</option>
+						<option value="27">1:00PM</option>
+						<option value="28">1:30PM</option>
+						<option value="29">2:00PM</option>
+						<option value="30">2:30PM</option>
+						<option value="31">3:00PM</option>
+						<option value="32">3:30PM</option>
+						<option value="33">4:00PM</option>
+						<option value="34">4:30PM</option>
+						<option value="35">5:00PM</option>
+						<option value="36">5:30PM</option>
+						<option value="37">6:00PM</option>
+						<option value="38">6:30PM</option>
+						<option value="39">7:00PM</option>
+						<option value="40">7:30PM</option>
+						<option value="41">8:00PM</option>
+						<option value="42">8:30PM</option>
+						<option value="43">9:00PM</option>
+						<option value="44">9:30PM</option>
+						<option value="45">10:00PM</option>
+						<option value="46">10:30PM</option>
+						<option value="47">11:00PM</option>
+						<option value="48">11:30PM</option>
+					<input type="date" name="pendDate" id="pendDate">
+					<br>
+					Event Name: <br>
+					<input type="text" name="peventName">
+					<br>
+					Description:<br>
+					<input type="text" name="peventDescription">
+					<br>
+					Location:<br>
+					<input type="text" name="peventLocation">
+					<br><br>
+					<input type="button" value="Submit" onclick="pSubForm()">
+				</form>
+				<button type="button" onclick="phideForm()"> Cancel </button>
 			</div>
 				
 		</p1>
