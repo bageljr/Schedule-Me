@@ -7,15 +7,13 @@
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		
-		<script src="../../editablegrid.js"></script>
-		<!-- [DO NOT DEPLOY] --> <script src="../../editablegrid_renderers.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="../../editablegrid_editors.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="../../editablegrid_validators.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="../../editablegrid_utils.js" ></script>
-		<!-- [DO NOT DEPLOY] --> <script src="../../editablegrid_charts.js" ></script>
-		<link rel="stylesheet" href="../../editablegrid.css" type="text/css" media="screen">
+		<!-- <script src="../../editablegrid.js"></script>
+		<script src="../../editablegrid_renderers.js" ></script>
+		<script src="../../editablegrid_editors.js" ></script>
+		<script src="../../editablegrid_validators.js" ></script>
+		<script src="../../editablegrid_utils.js" ></script>
+		<script src="../../editablegrid_charts.js" ></script>
+		<link rel="stylesheet" href="../../editablegrid.css" type="text/css" media="screen"> -->
 		
 		<style>
 			body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
@@ -43,7 +41,7 @@
 				display: none;
 				position:fixed;
 				top: 50%;
-				left: 50%;
+				left: 75%;
 				width:30em;
 				height:18em;
 				margin-top: -9em; /*set to a negative number 1/2 of your height*/
@@ -54,7 +52,7 @@
 
 		</style>
 		
-		<script>
+		<!-- <script>
 			window.onload = function() {
               editableGrid = new EditableGrid("DemoGridAttach", { sortIconUp: "up.png", sortIconDown: "down.png"}); 
 
@@ -75,6 +73,33 @@
 				editableGrid.attachToHTMLTable('htmlgrid');
 				editableGrid.renderGrid();
 			} 
+		</script> -->
+		
+		<script>
+		window.onload = function() {
+			weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+			//yesterDay = new Date(startDate - 86400000);
+			//var yesterDay = new Date(toDay - 72000000); 
+			var toDay = new Date();
+			toDay = new Date(toDay + 14400000);
+			var currentWeekDay = toDay.getDay();
+			var tempDay = toDay;
+			document.getElementById("w" + currentWeekDay).innerHTML = weekDays[toDay.getDay()] + " " + (toDay.getMonth()+1) + "/" + toDay.getDate();
+			
+			//not sure why both past and future dates can't be found using the same method, but it doesn't so two different methods are used
+			for (i=currentWeekDay; i>0; i--) {
+				tempDay = new Date(tempDay - 86400000);
+				var tempWeekDay = tempDay.getDay();
+				document.getElementById("w" + tempWeekDay).innerHTML = weekDays[tempDay.getDay()] + " " + (tempDay.getMonth()+1) + "/" + tempDay.getDate();
+			}
+			var tempDay = toDay;
+			for (i=currentWeekDay; i<6; i++) {
+				tempDay.setDate(tempDay.getDate()+1);
+				var tempWeekDay = tempDay.getDay();
+				document.getElementById("w" + tempWeekDay).innerHTML = weekDays[tempDay.getDay()] + " " + (tempDay.getMonth()+1) + "/" + tempDay.getDate();
+			}
+			//document.getElementById("test").innerHTML = currentWeekDay;
+		}
 		</script>
 		
 		<script>
@@ -97,19 +122,37 @@
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
 			
+			var toDay = new Date();
+			toDay = new Date(toDay + 14400000);
+			var currentWeekDay = toDay.getDay();
+			//Potential problem with remaining time in the day
+			var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
+			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay)));
 			var data = $('#Form').serializeArray();
 			var startTime = data[0].value;
 			var startDate = data[1].value;
 			startDate = new Date(startDate);
 			//The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
-			startDate = (startDate.getDay()+1)%7;
+			startDay = (startDate.getDay()+1)%7;
 			var endTime = data[2].value;
 			var endDate = data[3].value;
 			endDate = new Date(endDate);
-			endDate = (endDate.getDay()+1)%7;
+			endDay = (endDate.getDay()+1)%7;
 			var eventName = data[4].value;
-			var startCell = parseInt(startTime) + (48 * startDate);
-			var endCell = parseInt(endTime) + (48 * endDate);
+			var startCell = parseInt(startTime) + (48 * startDay);
+			var endCell = parseInt(endTime) + (48 * endDay);
+			if (startDate < sunDay) {
+				startCell = 1;
+			}
+			if (startDate > satDay) {
+				startCell = 336;
+			}
+			if (endDate < sunDay) {
+				endCell = 1;
+			}
+			if (endDate > satDay) {
+				endCell = 337;
+			}
 			for (i=0; i<(endCell-startCell); i++) {
 				var cell = parseInt(startCell) + i; 
 				document.getElementById(cell).innerHTML = eventName;
@@ -142,8 +185,8 @@
 			var form = document.getElementById("popupForm");
 			form.style.display = "block";
 			//TODO Change to put on date user selected
-			document.getElementById('pstartDate').valueAsDate = new Date();
-			document.getElementById('pendDate').valueAsDate = new Date();
+			//document.getElementById('pstartDate').valueAsDate = new Date();
+			//document.getElementById('pendDate').valueAsDate = new Date();
 		}
 		</script>
 		
@@ -168,19 +211,37 @@
 				document.getElementById(i).classList.remove('tempSelected');
 			 }
 			
+			var toDay = new Date();
+			toDay = new Date(toDay + 14400000);
+			var currentWeekDay = toDay.getDay();
+			//Potential problem with remaining time in the day
+			var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
+			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay))); 
 			var data = $('#pForm').serializeArray();
 			var startTime = data[0].value;
 			var startDate = data[1].value;
 			startDate = new Date(startDate);
 			//The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
-			startDate = (startDate.getDay()+1)%7;
+			startDay = (startDate.getDay()+1)%7;
 			var endTime = data[2].value;
 			var endDate = data[3].value;
 			endDate = new Date(endDate);
-			endDate = (endDate.getDay()+1)%7;
+			endDay = (endDate.getDay()+1)%7;
 			var eventName = data[4].value;
-			var startCell = parseInt(startTime) + (48 * startDate);
-			var endCell = parseInt(endTime) + (48 * endDate);
+			var startCell = parseInt(startTime) + (48 * startDay);
+			var endCell = parseInt(endTime) + (48 * endDay);
+			if (startDate < sunDay) {
+				startCell = 1;
+			}
+			if (startDate > satDay) {
+				startCell = 336;
+			}
+			if (endDate < sunDay) {
+				endCell = 1;
+			}
+			if (endDate > satDay) {
+				endCell = 337;
+			}
 			for (i=0; i<(endCell-startCell); i++) {
 				var cell = parseInt(startCell) + i; 
 				document.getElementById(cell).innerHTML = eventName;
@@ -262,6 +323,7 @@
 		  $("#htmlgrid td")
 			.mouseup(function () {
 			  pdisplayForm();
+			  document.getElementById('pForm').reset();
 			  document.getElementById("pstartTime").value = (firstCell%48);
 			  document.getElementById("pendTime").value = ((lastCell+1)%48);
 			  if (firstCell%48 == 0) {
@@ -270,7 +332,15 @@
 			  if ((lastCell%48+1) == 0) {
 				document.getElementById("pendTime").value = "48";
 			  }
-			
+			  var toDay = new Date();
+			  toDay = new Date(toDay + 14400000);
+			  var currentWeekDay = toDay.getDay();
+			  var dayDiff = cellColumn - currentWeekDay;
+			  var currentDay = new Date(toDay.setDate(toDay.getDate() + dayDiff));
+			  
+			  document.getElementById('pstartDate').valueAsDate = currentDay;
+			  document.getElementById('pendDate').valueAsDate = currentDay;
+			  
 			  firstCellChanged = false;
 			  lastCellChanged = false;
 			  isMouseDown = false;
@@ -286,6 +356,7 @@
 	
 	<body>
 		<h1>Schedule Me</h1>
+		<p id="test"></p>
 		<p1> 
 			<button type="button" onclick="displayForm()"> Make new event </button>
 			<div id="eventForm">
@@ -534,13 +605,13 @@
 		<table id="htmlgrid" class="testgrid">
 			<tr>
 				<th>Time</th>
-				<th>Sunday</th>
-				<th>Monday</th>
-				<th>Tuesday</th>
-				<th>Wednesday</th>
-				<th>Thursday</th>
-				<th>Friday</th>
-				<th>Saturday</th>
+				<th id="w0">Sunday</th>
+				<th id="w1">Monday</th>
+				<th id="w2">Tuesday</th>
+				<th id="w3">Wednesday</th>
+				<th id="w4">Thursday</th>
+				<th id="w5">Friday</th>
+				<th id="w6">Saturday</th>
 			</tr>
 			<tr id="R1">
 				<td>12am</td>
