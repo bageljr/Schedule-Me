@@ -76,6 +76,7 @@
 		</script> -->
 		
 		<script>
+		//On page load, gets the dates of the current weekdays and adds them to the table
 		window.onload = function() {
 			weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 			//yesterDay = new Date(startDate - 86400000);
@@ -103,6 +104,7 @@
 		</script>
 		
 		<script>
+		//displays the create event form
 		function displayForm() {
 			setDefaultForm();
 			var form = document.getElementById("eventForm");
@@ -111,6 +113,7 @@
 		</script>
 		
 		<script>
+		//hides the create event form
 		function hideForm() {
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
@@ -118,6 +121,7 @@
 		</script>
 		
 		<script>
+		//Takes the information from the event form and then updates the grid
 		function SubForm (){
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
@@ -173,6 +177,7 @@
 		</script>
 		
 		<script>
+		//Resets the form to default values, including today's date
 		function setDefaultForm() {
 			document.getElementById('Form').reset();
 			document.getElementById('startDate').valueAsDate = new Date();
@@ -181,6 +186,7 @@
 		</script>
 		
 		<script>
+		//Displays the popup form (when the user highlights boxes)
 		function pdisplayForm() {
 			var form = document.getElementById("popupForm");
 			form.style.display = "block";
@@ -191,6 +197,7 @@
 		</script>
 		
 		<script>
+		//Hides the popup form
 		function phideForm() {
 			var form = document.getElementById("popupForm");
 			form.style.display = "none";
@@ -204,6 +211,7 @@
 		</script>
 		
 		<script>
+		//Submits the popup form, taking the information from it
 		function pSubForm (){
 			var form = document.getElementById("popupForm");
 			form.style.display = "none";
@@ -262,6 +270,7 @@
 		</script>
 		
 		<script>
+		//Highlights boxes when the user drags on boxes, when the user finishes opens the popup form with the information from the user's drag
 		$(function () {
 		//#TODO change the default date based on selection
 		  var isMouseDown = false;
