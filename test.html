@@ -25,9 +25,21 @@
 			table.testgrid th { background: #E5E5E5; text-align: left; }
 			input.invalid { background: red; color: #FDFDFD; }
 			
-			td{ height: 20px; width: 100px;}
-			td.selected {background-color: red;}
-			td.tempSelected {background-color: red; opacity: .5}
+			td{ 
+				height: 20px;
+				width: 100px;
+				max-width: 100px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			td.selected {
+				background-color: red;
+			}
+			td.tempSelected {
+			background-color: red; 
+			opacity: .5;
+			}
 			
 			#eventForm {
 				display: none;
@@ -76,11 +88,17 @@
 		</script> -->
 		
 		<script>
-		window.onload = function() {
+		//currentDate is used to track the date of the calendar, finalDate stays constant to 
+			var currentDate = new Date();
+			var finalDate = new Date();
+			finalDate.setTime(currentDate.getTime());
+		</script>
+		
+		<script>
+		//Updates the calendar with the value of currentDate
+		function loadDate() {
 			weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-			//yesterDay = new Date(startDate - 86400000);
-			//var yesterDay = new Date(toDay - 72000000); 
-			var toDay = new Date();
+			var toDay = window.currentDate;
 			toDay = new Date(toDay + 14400000);
 			var currentWeekDay = toDay.getDay();
 			var tempDay = toDay;
@@ -98,11 +116,18 @@
 				var tempWeekDay = tempDay.getDay();
 				document.getElementById("w" + tempWeekDay).innerHTML = weekDays[tempDay.getDay()] + " " + (tempDay.getMonth()+1) + "/" + tempDay.getDate();
 			}
-			//document.getElementById("test").innerHTML = currentWeekDay;
 		}
 		</script>
 		
 		<script>
+		//On page load, gets the dates of the current weekdays and adds them to the table
+		window.onload = function() {
+			loadDate();
+		}
+		</script>
+		
+		<script>
+		//displays the create event form
 		function displayForm() {
 			setDefaultForm();
 			var form = document.getElementById("eventForm");
@@ -111,6 +136,7 @@
 		</script>
 		
 		<script>
+		//hides the create event form
 		function hideForm() {
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
@@ -118,15 +144,16 @@
 		</script>
 		
 		<script>
+		//Takes the information from the event form and then updates the grid
 		function SubForm (){
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
 			
-			var toDay = new Date();
+			var toDay = window.currentDate;
 			toDay = new Date(toDay + 14400000);
 			var currentWeekDay = toDay.getDay();
 			//Potential problem with remaining time in the day
-			var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
+			var sunDay = new Date(toDay - (86400000 * (currentWeekDay+1)));//.setDate(toDay.getDate()-currentWeekDay));
 			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay)));
 			var data = $('#Form').serializeArray();
 			var startTime = data[0].value;
@@ -173,6 +200,7 @@
 		</script>
 		
 		<script>
+		//Resets the form to default values, including today's date
 		function setDefaultForm() {
 			document.getElementById('Form').reset();
 			document.getElementById('startDate').valueAsDate = new Date();
@@ -181,6 +209,7 @@
 		</script>
 		
 		<script>
+		//Displays the popup form (when the user highlights boxes)
 		function pdisplayForm() {
 			var form = document.getElementById("popupForm");
 			form.style.display = "block";
@@ -191,6 +220,7 @@
 		</script>
 		
 		<script>
+		//Hides the popup form
 		function phideForm() {
 			var form = document.getElementById("popupForm");
 			form.style.display = "none";
@@ -204,6 +234,7 @@
 		</script>
 		
 		<script>
+		//Submits the popup form, taking the information from it
 		function pSubForm (){
 			var form = document.getElementById("popupForm");
 			form.style.display = "none";
@@ -211,11 +242,11 @@
 				document.getElementById(i).classList.remove('tempSelected');
 			 }
 			
-			var toDay = new Date();
+			var toDay = window.currentDate;
 			toDay = new Date(toDay + 14400000);
 			var currentWeekDay = toDay.getDay();
 			//Potential problem with remaining time in the day
-			var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
+			var sunDay = new Date(toDay - (86400000 * (currentWeekDay+1)));//.setDate(toDay.getDate()-currentWeekDay));
 			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay))); 
 			var data = $('#pForm').serializeArray();
 			var startTime = data[0].value;
@@ -262,6 +293,7 @@
 		</script>
 		
 		<script>
+		//Highlights boxes when the user drags on boxes, when the user finishes opens the popup form with the information from the user's drag
 		$(function () {
 		//#TODO change the default date based on selection
 		  var isMouseDown = false;
@@ -322,17 +354,18 @@
 		  
 		  $("#htmlgrid td")
 			.mouseup(function () {
+			  var is12 = false;
 			  pdisplayForm();
 			  document.getElementById('pForm').reset();
 			  document.getElementById("pstartTime").value = (firstCell%48);
-			  document.getElementById("pendTime").value = ((lastCell+1)%48);
+			  document.getElementById("pendTime").value = ((lastCell%48)+1);
 			  if (firstCell%48 == 0) {
 				document.getElementById("pstartTime").value = "48";
 			  }
-			  if ((lastCell%48+1) == 0) {
-				document.getElementById("pendTime").value = "48";
+			  if (lastCell%48 == 0) {
+				is12 = true;
 			  }
-			  var toDay = new Date();
+			  var toDay = window.currentDate;
 			  toDay = new Date(toDay + 14400000);
 			  var currentWeekDay = toDay.getDay();
 			  var dayDiff = cellColumn - currentWeekDay;
@@ -340,6 +373,10 @@
 			  
 			  document.getElementById('pstartDate').valueAsDate = currentDay;
 			  document.getElementById('pendDate').valueAsDate = currentDay;
+			  if (is12 == true) {
+				tomorrow = new Date(currentDay.setDate(currentDay.getDate()+1));
+				document.getElementById('pendDate').valueAsDate = tomorrow;
+			  }
 			  
 			  firstCellChanged = false;
 			  lastCellChanged = false;
@@ -347,9 +384,56 @@
 			  firstCell = 0;
 			  cellColumn = 0;
 			  lastCell = 0;
-			  //TODO add popup instead of displayForm, make temp selected stay until form is dealt with
 			});
 		});
+		</script>
+		
+		<script>
+		function clearCalendar() {
+			for (i=1; i<337; i++) {
+				var cell = i; 
+				document.getElementById(cell).innerHTML = "";
+				document.getElementById(cell).classList.remove('selected');
+			}
+		}
+		</script>
+		
+		<script>
+		function prevWeek() {
+			window.currentDate = new Date(window.currentDate - 604800000);
+			if (window.currentDate.getTime() === window.finalDate.getTime()) {
+				document.getElementById("Today").disabled = true;
+			}
+			else {
+				document.getElementById("Today").disabled = false;
+			}
+			loadDate();
+			clearCalendar();
+		}
+		</script>
+		
+		<script>
+		function nextWeek() {
+			window.currentDate.setTime(window.currentDate.getTime() + 604800000);
+			if (window.currentDate.getTime() === window.finalDate.getTime()) {
+				document.getElementById("Today").disabled = true;
+			}
+			else {
+				document.getElementById("Today").disabled = false;
+			}
+			loadDate();
+			clearCalendar();
+		}
+		</script>
+		
+		<script>
+		function resetDate() {
+			window.currentDate.setTime(window.finalDate.getTime());
+			//window.finalDate = new Date();
+			document.getElementById("Today").disabled = true;
+			loadDate();
+			clearCalendar();
+		}
 		</script>
 		
 	</head>
@@ -359,6 +443,9 @@
 		<p id="test"></p>
 		<p1> 
 			<button type="button" onclick="displayForm()"> Make new event </button>
+			<button type="button" onclick="prevWeek()"> < </button>
+			<button type="button" onclick="nextWeek()"> > </button>
+			<button type="button" onclick="resetDate()" disabled id="Today"> Today </button>
 			<div id="eventForm">
 				<form id="Form">
 					Start Time:<br>
