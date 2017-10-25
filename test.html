@@ -37,8 +37,8 @@
 				background-color: red;
 			}
 			td.tempSelected {
-			background-color: red; 
-			opacity: .5;
+				background-color: red; 
+				opacity: .5;
 			}
 			
 			#eventForm {
@@ -90,6 +90,7 @@
 		<script>
 		//currentDate is used to track the date of the calendar, finalDate stays constant to 
 			var currentDate = new Date();
+			currentDate = new Date(currentDate - 14400000);
 			var finalDate = new Date();
 			finalDate.setTime(currentDate.getTime());
 		</script>
@@ -99,7 +100,7 @@
 		function loadDate() {
 			weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 			var toDay = window.currentDate;
-			toDay = new Date(toDay + 14400000);
+			toDay = new Date(toDay - 14400000);
 			var currentWeekDay = toDay.getDay();
 			var tempDay = toDay;
 			document.getElementById("w" + currentWeekDay).innerHTML = weekDays[toDay.getDay()] + " " + (toDay.getMonth()+1) + "/" + toDay.getDate();
@@ -180,10 +181,12 @@
 			if (endDate > satDay) {
 				endCell = 337;
 			}
-			for (i=0; i<(endCell-startCell); i++) {
-				var cell = parseInt(startCell) + i; 
-				document.getElementById(cell).innerHTML = eventName;
-				document.getElementById(cell).classList.add('selected');
+			if (checkConflict(startCell, endCell)) {
+				for (i=0; i<(endCell-startCell); i++) {
+					var cell = parseInt(startCell) + i; 
+					document.getElementById(cell).innerHTML = eventName;
+					document.getElementById(cell).classList.add('selected');
+				}
 			}
 			
 			//Can be used to post data to external database
@@ -203,8 +206,8 @@
 		//Resets the form to default values, including today's date
 		function setDefaultForm() {
 			document.getElementById('Form').reset();
-			document.getElementById('startDate').valueAsDate = new Date();
-			document.getElementById('endDate').valueAsDate = new Date();
+			document.getElementById('startDate').valueAsDate = new Date(currentDate);
+			document.getElementById('endDate').valueAsDate = new Date(currentDate);
 		}
 		</script>
 		
@@ -273,10 +276,12 @@
 			if (endDate > satDay) {
 				endCell = 337;
 			}
-			for (i=0; i<(endCell-startCell); i++) {
-				var cell = parseInt(startCell) + i; 
-				document.getElementById(cell).innerHTML = eventName;
-				document.getElementById(cell).classList.add('selected');
+			if (checkConflict(startCell, endCell)) {
+				for (i=0; i<(endCell-startCell); i++) {
+					var cell = parseInt(startCell) + i; 
+					document.getElementById(cell).innerHTML = eventName;
+					document.getElementById(cell).classList.add('selected');
+				}
 			}
 			
 			//Can be used to post data to external database
@@ -366,7 +371,7 @@
 				is12 = true;
 			  }
 			  var toDay = window.currentDate;
-			  toDay = new Date(toDay + 14400000);
+			  toDay = new Date(toDay - 14400000);
 			  var currentWeekDay = toDay.getDay();
 			  var dayDiff = cellColumn - currentWeekDay;
 			  var currentDay = new Date(toDay.setDate(toDay.getDate() + dayDiff));
@@ -433,6 +438,19 @@
 			document.getElementById("Today").disabled = true;
 			loadDate();
 			clearCalendar();
+		}
+		</script>
+		
+		<script>
+		function checkConflict(startCell, endCell) {
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i;
+				if($('#'+cell).is('.selected')) {
+					alert("Schedule conflict");
+					return false;
+				}
+			}
+			return true;
 		}
 		</script>
 		
