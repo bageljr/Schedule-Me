@@ -47,8 +47,6 @@
 		<script>
 		window.onload = function() {
 			weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-			//yesterDay = new Date(startDate - 86400000);
-			//var yesterDay = new Date(toDay - 72000000); 
 			var toDay = new Date();
 			toDay = new Date(toDay + 14400000);
 			var currentWeekDay = toDay.getDay();
@@ -87,6 +85,7 @@
 		</script>
 		
 		<script>
+            
 		function SubForm (){
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
@@ -129,14 +128,14 @@
 			}
 			
 			//Can be used to post data to external database
-			/*$.ajax({
-				url:'https://requestb.in/18tll211',
+			$.ajax({
+				url:'http://localhost/~nolanjelinski/insertData.php',
 				type:'post',
 				data:$('#Form').serializeArray(),
 				success:function(){
 					alert("worked");
 				}
-			});*/
+			});
 			
 		}
 		</script>
@@ -218,14 +217,14 @@
 			}
 			
 			//Can be used to post data to external database
-			/*$.ajax({
+			$.ajax({
 				url:'https://requestb.in/18tll211',
 				type:'post',
 				data:$('#Form').serializeArray(),
 				success:function(){
 					alert("worked");
 				}
-			});*/
+			});
 			
 		}
 		</script>
