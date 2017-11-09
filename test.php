@@ -1070,11 +1070,13 @@
         echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
     }
     
-    echo $mysqli->host_info . "\n";
     $sql = "select * from events";
-    $result = $conn->query($sql);
-    echo "$result";
-    $conn->close();
+    $result = $mysqli->query($sql);
+    
+    while($row = $result->fetch_assoc()) 
+    {
+        echo "Class: " . $row["name"];
+    }
 ?>               
 </p>
 	</body>
