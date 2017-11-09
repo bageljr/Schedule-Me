@@ -10,13 +10,13 @@
     $startTime =$_POST['startTime'];
     $startDate =$_POST['startDate'];
     $endTime = $_POST['endTime'];
-    $endTime =$_POST['endDate'];
+    $endDate =$_POST['endDate'];
     $eventName = $_POST['eventName'];
     $eventLocation = $_POST['eventLocation'];
     $eventDescription = $_POST['eventDescription'];
 
-    $sql = "INSERT INTO events (event_id, start_time, start_date, end_time, end_date, name, location, description) 
-        VALUES ('1', '$startTime', '$startDate', '$endTime', '$endDate', '$eventName', '$eventLocation', '$eventDescription')";
+    $sql = "INSERT INTO events (start_time, start_date, end_time, end_date, name, user_name, location, description) 
+        VALUES ('$startTime', '$startDate', '$endTime', '$endDate', '$eventName', 'nolan', '$eventLocation', '$eventDescription')";
         
     if ($mysqli->query($sql) === TRUE) 
     {
