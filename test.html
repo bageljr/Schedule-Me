@@ -131,7 +131,7 @@
 			$.ajax({
 				url:'http://localhost/~nolanjelinski/insertData.php',
 				type:'post',
-				data:$('#Form').serializeArray(),
+				data:$('#Form').serialize(),
 				success:function(){
 					alert("worked");
 				}
@@ -1062,6 +1062,11 @@
 				<td id="336"></td>
 			</tr>
 		</table>
+<p id="test">
+<?php
+    echo 'Hello';
+?>               
+</p>
 	</body>
 	
 </html>
