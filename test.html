@@ -188,16 +188,20 @@
 					document.getElementById(cell).classList.add('selected');
 				}
 			}
-			
+			//final 18000000 is needed to offset time difference from UTC
+			startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
+			data[0].value = + startDate;
+			data[2].value = + endDate;
 			//Can be used to post data to external database
-			/*$.ajax({
-				url:'https://requestb.in/18tll211',
+			$.ajax({
+				url:'https://requestb.in/syduixsy',
 				type:'post',
-				data:$('#Form').serializeArray(),
+				data:data,
 				success:function(){
 					alert("worked");
 				}
-			});*/
+			});
 			
 		}
 		</script>
@@ -283,16 +287,20 @@
 					document.getElementById(cell).classList.add('selected');
 				}
 			}
-			
+			//final 18000000 is needed to offset time difference from UTC
+			startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
+			data[0].value = + startDate;
+			data[2].value = + endDate;
 			//Can be used to post data to external database
-			/*$.ajax({
-				url:'https://requestb.in/18tll211',
+			$.ajax({
+				url:'https://requestb.in/syduixsy',
 				type:'post',
-				data:$('#Form').serializeArray(),
+				data:data,
 				success:function(){
 					alert("worked");
 				}
-			});*/
+			});
 			
 		}
 		</script>
