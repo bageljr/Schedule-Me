@@ -65,10 +65,37 @@
 				var tempWeekDay = tempDay.getDay();
 				document.getElementById("w" + tempWeekDay).innerHTML = weekDays[tempDay.getDay()] + " " + (tempDay.getMonth()+1) + "/" + tempDay.getDate();
 			}
+			fillIn();
 			//document.getElementById("test").innerHTML = currentWeekDay;
 		}
 		</script>
-		
+
+		<script>
+
+			function populate(j) // fills in with database info
+			{
+				$.ajax({                                      
+	      				url:'http://localhost/~nolanjelinski/fill.php',     
+	      				type: 'get',  
+	      				data: {cellnum: i},                                          
+					    success: function(data)          
+					    {
+					        var event = data[0];
+					        document.getElementById(j).innerHTML = event; 
+					        document.getElementById(cell).classList.add('selected');
+					    } 
+	    			});
+			}
+
+			function fillIn() // needs to call separate function outside of loop
+			{
+				for (i = 1; i <= 336; i++)
+				{
+					populate(i);
+				}
+			}
+		</script>
+
 		<script>
 		function displayForm() {
 			setDefaultForm();
@@ -1062,7 +1089,7 @@
 				<td id="336"></td>
 			</tr>
 		</table>
-<p id="test">
+<!--<p id="test">
 <?php
     $mysqli = new mysqli("127.0.0.1", "njelinsk", "njelinsk96", "Schedules", 3306);
     if ($mysqli->connect_errno) 
@@ -1078,7 +1105,7 @@
         echo "Class: " . $row["name"];
     }
 ?>               
-</p>
+</p>-->
 	</body>
 	
 </html>
