@@ -1346,6 +1346,23 @@
 				<td id="336"></td>
 			</tr>
 		</table>
+<!--<p id="test">
+<?php
+    $mysqli = new mysqli("127.0.0.1", "njelinsk", "njelinsk96", "Schedules", 3306);
+    if ($mysqli->connect_errno) 
+    {
+        echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    }
+    
+    $sql = "select * from events";
+    $result = $mysqli->query($sql);
+    
+    while($row = $result->fetch_assoc()) 
+    {
+        echo "Class: " . $row["name"];
+    }
+?>               
+</p>-->
 	</body>
 	
 </html>
