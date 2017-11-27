@@ -451,6 +451,7 @@
 				document.getElementById(cell).innerHTML = "";
 				document.getElementById(cell).classList.remove('selected');
 			}
+			clearEventArray();
 		}
 		</script>
 		
@@ -521,6 +522,72 @@
 		function hideDisplay() {
 			var info = document.getElementById("infoDisplay");
 			info.style.display = "none";
+		}
+		</script>
+		
+		<script>
+		function loadDates(data) {
+			//startTime, startDate, endTime, endDate, eventName, eventDescription eventLocation
+			var toDay = window.currentDate;
+			toDay = new Date(toDay + 18000000);
+			var currentWeekDay = toDay.getDay();
+			var sunDay = new Date(toDay - (86400000 * (currentWeekDay+1)));
+			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay)));  
+			var startTime = data[0].value;
+			var startDate = data[1].value;
+			startDate = new Date(startDate);
+			//The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
+			startDay = (startDate.getDay()+1)%7;
+			var endTime = data[2].value;
+			var endDate = data[3].value;
+			endDate = new Date(endDate);
+			endDay = (endDate.getDay()+1)%7;
+			var eventName = data[4].value;
+			var startCell = (startTime.getHours() * 2) + (statTime.getMinutes() / 30) + (48 * startDay);
+			var endCell = (endTime.getHours() * 2) + (endTime.getMinutes() / 30) + (48 * endDay);
+			if (startDate < sunDay) {
+				startCell = 1;
+			}
+			if (startDate > satDay) {
+				startCell = 337;
+			}
+			if (endDate < sunDay) {
+				endCell = 1;
+			}
+			if (endDate > satDay) {
+				endCell = 337;
+			}
+			
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i;
+				if (eventArray[cell-1].numEvents == 0) {
+					document.getElementById(cell).innerHTML = eventName;
+					document.getElementById(cell).classList.add('selected');
+					eventArray[cell-1].eventNames[0] = eventName;
+					eventArray[cell-1].startTimes[0] = startDate;
+					eventArray[cell-1].endTimes[0] = endDate;
+					eventArray[cell-1].descriptions[0] = data[5].value;
+					eventArray[cell-1].locations[0] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+				else {
+					document.getElementById(cell).insertAdjacentHTML('afterbegin', eventName+" / ");
+					eventArray[cell-1].eventNames[eventArray[cell-1].numEvents] = eventName;
+					eventArray[cell-1].startTimes[eventArray[cell-1].numEvents] = startDate;
+					eventArray[cell-1].endTimes[eventArray[cell-1].numEvents] = endDate;
+					eventArray[cell-1].descriptions[eventArray[cell-1].numEvents] = data[5].value;
+					eventArray[cell-1].locations[eventArray[cell-1].numEvents] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+			}
+		}
+		</script>
+		
+		<script>
+		function clearEventArray() {
+			for (i=0; i <336; i++) {
+				eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []}
+			}
 		}
 		</script>
 		
