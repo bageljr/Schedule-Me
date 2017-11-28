@@ -7,6 +7,14 @@
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		
+		<!-- <script src="../../editablegrid.js"></script>
+		<script src="../../editablegrid_renderers.js" ></script>
+		<script src="../../editablegrid_editors.js" ></script>
+		<script src="../../editablegrid_validators.js" ></script>
+		<script src="../../editablegrid_utils.js" ></script>
+		<script src="../../editablegrid_charts.js" ></script>
+		<link rel="stylesheet" href="../../editablegrid.css" type="text/css" media="screen"> -->
+		
 		<style>
 			body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
 			h1 { font-size: 15px; }
@@ -17,9 +25,21 @@
 			table.testgrid th { background: #E5E5E5; text-align: left; }
 			input.invalid { background: red; color: #FDFDFD; }
 			
-			td{ height: 20px; width: 100px;}
-			td.selected {background-color: red;}
-			td.tempSelected {background-color: red; opacity: .5}
+			td{ 
+				height: 20px;
+				width: 100px;
+				max-width: 100px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			td.selected {
+				background-color: red;
+			}
+			td.tempSelected {
+				background-color: red; 
+				opacity: .5;
+			}
 			
 			#eventForm {
 				display: none;
@@ -41,14 +61,66 @@
 				border: 1px solid #ccc;
 				background-color: #f3f3f3;
 			}
+			
+			#infoDisplay {
+				display: none;
+				position: fixed;
+				top: 50%;
+				left: 75%;
+				width:30em;
+				height:18em;
+				margin-top: -9em; /*set to a negative number 1/2 of your height*/
+				margin-left: -15em; /*set to a negative number 1/2 of your width*/
+				border: 1px solid #ccc;
+				background-color: #f3f3f3;
+			}
 
 		</style>
 		
+		<!-- <script>
+			window.onload = function() {
+              editableGrid = new EditableGrid("DemoGridAttach", { sortIconUp: "up.png", sortIconDown: "down.png"}); 
+
+				editableGrid.enableSort = false;
+				// we build and load the metadata in Javascript
+				editableGrid.load({ metadata: [
+					{ name: "Time", datatype: "string", editable: false },
+					{ name: "Sunday", datatype: "string", editable: true },
+					{ name: "Monday", datatype: "string", editable: true },
+					{ name: "Tuesday", datatype: "string", editable: true },
+					{ name: "Wednesday", datatype: "string", editable: true },
+					{ name: "Thursday", datatype: "string", editable: true },
+					{ name: "Friday", datatype: "string", editable: true },
+					{ name: "Saturday", datatype: "string", editable: true },
+				]});
+
+				// then we attach to the HTML table and render it
+				editableGrid.attachToHTMLTable('htmlgrid');
+				editableGrid.renderGrid();
+			} 
+		</script> -->
+		
 		<script>
-		window.onload = function() {
+		//currentDate is used to track the date of the calendar, finalDate stays constant to 
+			var currentDate = new Date();
+			currentDate = new Date(currentDate - 18000000);
+			var finalDate = new Date();
+			finalDate.setTime(currentDate.getTime());
+			var eventArray = [];
+			for (i=0; i <336; i++) {
+				eventArray[i]= i; //???
+				//eventArray[i] = {numEvents: 0, eventName: "", startTime: "", endTime: "", location: "", description: ""}
+				eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []}
+				//change to custom object with all of the event info, and number of events at that time
+			}
+		</script>
+		
+		<script>
+		//Updates the calendar with the value of currentDate
+		function loadDate() {
 			weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-			var toDay = new Date();
-			toDay = new Date(toDay + 14400000);
+			var toDay = window.currentDate;
+			toDay = new Date(toDay - 18000000);
 			var currentWeekDay = toDay.getDay();
 			var tempDay = toDay;
 			document.getElementById("w" + currentWeekDay).innerHTML = weekDays[toDay.getDay()] + " " + (toDay.getMonth()+1) + "/" + toDay.getDate();
@@ -65,8 +137,14 @@
 				var tempWeekDay = tempDay.getDay();
 				document.getElementById("w" + tempWeekDay).innerHTML = weekDays[tempDay.getDay()] + " " + (tempDay.getMonth()+1) + "/" + tempDay.getDate();
 			}
+		}
+		</script>
+		
+		<script>
+		//On page load, gets the dates of the current weekdays and adds them to the table
+		window.onload = function() {
+			loadDate();
 			fillIn();
-			//document.getElementById("test").innerHTML = currentWeekDay;
 		}
 		</script>
 
@@ -95,8 +173,9 @@
 				}
 			}
 		</script>
-
+		
 		<script>
+		//displays the create event form
 		function displayForm() {
 			setDefaultForm();
 			var form = document.getElementById("eventForm");
@@ -105,6 +184,7 @@
 		</script>
 		
 		<script>
+		//hides the create event form
 		function hideForm() {
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
@@ -112,16 +192,16 @@
 		</script>
 		
 		<script>
-            
+		//Takes the information from the event form and then updates the grid
 		function SubForm (){
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
 			
-			var toDay = new Date();
-			toDay = new Date(toDay + 14400000);
+			var toDay = window.currentDate;
+			toDay = new Date(toDay + 18000000);
 			var currentWeekDay = toDay.getDay();
 			//Potential problem with remaining time in the day
-			var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
+			var sunDay = new Date(toDay - (86400000 * (currentWeekDay+1)));//.setDate(toDay.getDate()-currentWeekDay));
 			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay)));
 			var data = $('#Form').serializeArray();
 			var startTime = data[0].value;
@@ -148,12 +228,36 @@
 			if (endDate > satDay) {
 				endCell = 337;
 			}
-			for (i=0; i<(endCell-startCell); i++) {
-				var cell = parseInt(startCell) + i; 
-				document.getElementById(cell).innerHTML = eventName;
-				document.getElementById(cell).classList.add('selected');
-			}
 			
+			//final 18000000 is needed to offset time difference from UTC
+			startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
+			data[0].value = + startDate;
+			data[2].value = + endDate;
+			
+			//if (checkConflict(startCell, endCell)) {
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i;
+				if (eventArray[cell-1].numEvents == 0) {
+					document.getElementById(cell).innerHTML = eventName;
+					document.getElementById(cell).classList.add('selected');
+					eventArray[cell-1].eventNames[0] = eventName;
+					eventArray[cell-1].startTimes[0] = startDate;
+					eventArray[cell-1].endTimes[0] = endDate;
+					eventArray[cell-1].descriptions[0] = data[5].value;
+					eventArray[cell-1].locations[0] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+				else {
+					document.getElementById(cell).insertAdjacentHTML('afterbegin', eventName+" / ");
+					eventArray[cell-1].eventNames[eventArray[cell-1].numEvents] = eventName;
+					eventArray[cell-1].startTimes[eventArray[cell-1].numEvents] = startDate;
+					eventArray[cell-1].endTimes[eventArray[cell-1].numEvents] = endDate;
+					eventArray[cell-1].descriptions[eventArray[cell-1].numEvents] = data[5].value;
+					eventArray[cell-1].locations[eventArray[cell-1].numEvents] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+			}
 			//Can be used to post data to external database
 			$.ajax({
 				url:'http://localhost/~nolanjelinski/insertData.php',
@@ -163,19 +267,20 @@
 					alert("worked");
 				}
 			});
-			
 		}
 		</script>
 		
 		<script>
+		//Resets the form to default values, including today's date
 		function setDefaultForm() {
 			document.getElementById('Form').reset();
-			document.getElementById('startDate').valueAsDate = new Date();
-			document.getElementById('endDate').valueAsDate = new Date();
+			document.getElementById('startDate').valueAsDate = new Date(currentDate);
+			document.getElementById('endDate').valueAsDate = new Date(currentDate);
 		}
 		</script>
 		
 		<script>
+		//Displays the popup form (when the user highlights boxes)
 		function pdisplayForm() {
 			var form = document.getElementById("popupForm");
 			form.style.display = "block";
@@ -186,6 +291,7 @@
 		</script>
 		
 		<script>
+		//Hides the popup form
 		function phideForm() {
 			var form = document.getElementById("popupForm");
 			form.style.display = "none";
@@ -199,6 +305,7 @@
 		</script>
 		
 		<script>
+		//Submits the popup form, taking the information from it
 		function pSubForm (){
 			var form = document.getElementById("popupForm");
 			form.style.display = "none";
@@ -206,11 +313,11 @@
 				document.getElementById(i).classList.remove('tempSelected');
 			 }
 			
-			var toDay = new Date();
-			toDay = new Date(toDay + 14400000);
+			var toDay = window.currentDate;
+			toDay = new Date(toDay + 18000000);
 			var currentWeekDay = toDay.getDay();
 			//Potential problem with remaining time in the day
-			var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
+			var sunDay = new Date(toDay - (86400000 * (currentWeekDay+1)));//.setDate(toDay.getDate()-currentWeekDay));
 			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay))); 
 			var data = $('#pForm').serializeArray();
 			var startTime = data[0].value;
@@ -237,26 +344,52 @@
 			if (endDate > satDay) {
 				endCell = 337;
 			}
-			for (i=0; i<(endCell-startCell); i++) {
-				var cell = parseInt(startCell) + i; 
-				document.getElementById(cell).innerHTML = eventName;
-				document.getElementById(cell).classList.add('selected');
-			}
 			
+			//final 18000000 is needed to offset time difference from UTC
+			startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
+			data[0].value = + startDate;
+			data[2].value = + endDate;
+			
+			//if (checkConflict(startCell, endCell)) {
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i;
+				if (eventArray[cell-1].numEvents == 0) {
+					document.getElementById(cell).innerHTML = eventName;
+					document.getElementById(cell).classList.add('selected');
+					eventArray[cell-1].eventNames[0] = eventName;
+					eventArray[cell-1].startTimes[0] = startDate;
+					eventArray[cell-1].endTimes[0] = endDate;
+					eventArray[cell-1].descriptions[0] = data[5].value;
+					eventArray[cell-1].locations[0] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+				else {
+					document.getElementById(cell).insertAdjacentHTML('afterbegin', eventName+" / ");
+					eventArray[cell-1].eventNames[eventArray[cell-1].numEvents] = eventName;
+					eventArray[cell-1].startTimes[eventArray[cell-1].numEvents] = startDate;
+					eventArray[cell-1].endTimes[eventArray[cell-1].numEvents] = endDate;
+					eventArray[cell-1].descriptions[eventArray[cell-1].numEvents] = data[5].value;
+					eventArray[cell-1].locations[eventArray[cell-1].numEvents] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+			}
+			//}
 			//Can be used to post data to external database
-			$.ajax({
-				url:'https://requestb.in/18tll211',
+			/*$.ajax({
+				url:'https://requestb.in/syduixsy',
 				type:'post',
-				data:$('#Form').serializeArray(),
+				data:data,
 				success:function(){
 					alert("worked");
 				}
-			});
+			});*/
 			
 		}
 		</script>
 		
 		<script>
+		//Highlights boxes when the user drags on boxes, when the user finishes opens the popup form with the information from the user's drag
 		$(function () {
 		//#TODO change the default date based on selection
 		  var isMouseDown = false;
@@ -265,6 +398,8 @@
 		  var lastCell = 0;
 		  var firstCellChanged = false;
 		  var lastCellChanged = false;
+		  var highlighted = false;
+		  var isNotTime = false;
 		  $("#htmlgrid td")
 			.mousedown(function () {
 			  isMouseDown = true;
@@ -272,11 +407,20 @@
 			  firstCell = parseInt(firstCell);
 			  cellColumn = parseInt((firstCell-1)/48);
 			  lastCell = parseInt(firstCell);
-			  $(this).toggleClass("tempSelected");
+			  if ($('#'+firstCell).is('.selected')) {
+				highlighted = true;
+				showDisplay(firstCell);
+			  }
+			  else if (!(firstCell > 0) && !(lastCell < 336)) {
+				isNotTime = true;
+			  }
+			  else {
+				$(this).toggleClass("tempSelected");
+			  }
 			  return false; // prevent text selection
 			})
 			.mouseover(function () {
-			  if (isMouseDown) {
+			  if ((isMouseDown) && !(highlighted)) {
 				var currentCell = parseInt($(this).attr('id'));
 				if (parseInt((currentCell-1)/48) == cellColumn) {
 					if (currentCell < firstCell) {
@@ -317,34 +461,123 @@
 		  
 		  $("#htmlgrid td")
 			.mouseup(function () {
-			  pdisplayForm();
-			  document.getElementById('pForm').reset();
-			  document.getElementById("pstartTime").value = (firstCell%48);
-			  document.getElementById("pendTime").value = ((lastCell+1)%48);
-			  if (firstCell%48 == 0) {
-				document.getElementById("pstartTime").value = "48";
+			  if (!highlighted && !isNotTime) {
+				  var is12 = false;
+				  pdisplayForm();
+				  document.getElementById('pForm').reset();
+				  document.getElementById("pstartTime").value = (firstCell%48);
+				  document.getElementById("pendTime").value = ((lastCell%48)+1);
+				  if (firstCell%48 == 0) {
+					document.getElementById("pstartTime").value = "48";
+				  }
+				  if (lastCell%48 == 0) {
+					is12 = true;
+				  }
+				  var toDay = window.currentDate;
+				  toDay = new Date(toDay - 18000000);
+				  var currentWeekDay = toDay.getDay();
+				  var dayDiff = cellColumn - currentWeekDay;
+				  var currentDay = new Date(toDay.setDate(toDay.getDate() + dayDiff));
+				  
+				  document.getElementById('pstartDate').valueAsDate = currentDay;
+				  document.getElementById('pendDate').valueAsDate = currentDay;
+				  if (is12 == true) {
+					tomorrow = new Date(currentDay.setDate(currentDay.getDate()+1));
+					document.getElementById('pendDate').valueAsDate = tomorrow;
+				  }
+				  
 			  }
-			  if ((lastCell%48+1) == 0) {
-				document.getElementById("pendTime").value = "48";
-			  }
-			  var toDay = new Date();
-			  toDay = new Date(toDay + 14400000);
-			  var currentWeekDay = toDay.getDay();
-			  var dayDiff = cellColumn - currentWeekDay;
-			  var currentDay = new Date(toDay.setDate(toDay.getDate() + dayDiff));
-			  
-			  document.getElementById('pstartDate').valueAsDate = currentDay;
-			  document.getElementById('pendDate').valueAsDate = currentDay;
 			  
 			  firstCellChanged = false;
 			  lastCellChanged = false;
 			  isMouseDown = false;
+			  highlighted = false;
+			  isNotTime = false;
 			  firstCell = 0;
 			  cellColumn = 0;
 			  lastCell = 0;
-			  //TODO add popup instead of displayForm, make temp selected stay until form is dealt with
 			});
 		});
+		</script>
+		
+		<script>
+		function clearCalendar() {
+			for (i=1; i<337; i++) {
+				var cell = i; 
+				document.getElementById(cell).innerHTML = "";
+				document.getElementById(cell).classList.remove('selected');
+			}
+		}
+		</script>
+		
+		<script>
+		function prevWeek() {
+			window.currentDate = new Date(window.currentDate - 604800000);
+			if (window.currentDate.getTime() === window.finalDate.getTime()) {
+				document.getElementById("Today").disabled = true;
+			}
+			else {
+				document.getElementById("Today").disabled = false;
+			}
+			loadDate();
+			clearCalendar();
+		}
+		</script>
+		
+		<script>
+		function nextWeek() {
+			window.currentDate.setTime(window.currentDate.getTime() + 604800000);
+			if (window.currentDate.getTime() === window.finalDate.getTime()) {
+				document.getElementById("Today").disabled = true;
+			}
+			else {
+				document.getElementById("Today").disabled = false;
+			}
+			loadDate();
+			clearCalendar();
+		}
+		</script>
+		
+		<script>
+		function resetDate() {
+			window.currentDate.setTime(window.finalDate.getTime());
+			//window.finalDate = new Date();
+			document.getElementById("Today").disabled = true;
+			loadDate();
+			clearCalendar();
+		}
+		</script>
+		
+		<script>
+		function checkConflict(startCell, endCell) {
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i;
+				if($('#'+cell).is('.selected')) {
+					alert("Schedule conflict");
+					return false;
+				}
+			}
+			return true;
+		}
+		</script>
+		
+		<script>
+		function showDisplay(cell) {
+			var info = document.getElementById("infoDisplay");
+			info.style.display = "block";
+			document.getElementById("infoStart").innerHTML = "Start Time: " + eventArray[cell-1].startTimes;
+			document.getElementById("infoEnd").innerHTML = "End Time: " + eventArray[cell-1].endTimes;
+			document.getElementById("infoName").innerHTML = "Event Name: " + eventArray[cell-1].eventNames;
+			document.getElementById("infoDescription").innerHTML = "Description: " + eventArray[cell-1].descriptions;
+			document.getElementById("infoLocation").innerHTML = "Location: " + eventArray[cell-1].locations;
+		}
+		</script>
+		
+		<script>
+		function hideDisplay() {
+			var info = document.getElementById("infoDisplay");
+			info.style.display = "none";
+		}
 		</script>
 		
 	</head>
@@ -354,6 +587,9 @@
 		<p id="test"></p>
 		<p1> 
 			<button type="button" onclick="displayForm()"> Make new event </button>
+			<button type="button" onclick="prevWeek()"> < </button>
+			<button type="button" onclick="nextWeek()"> > </button>
+			<button type="button" onclick="resetDate()" disabled id="Today"> Today </button>
 			<div id="eventForm">
 				<form id="Form">
 					Start Time:<br>
@@ -595,7 +831,28 @@
 				</form>
 				<button type="button" onclick="phideForm()"> Cancel </button>
 			</div>
-				
+			<div id="infoDisplay">
+				<p id="infoStart"> Start Time: <br> </p>
+				<br> 
+				<p id="infoEnd"> End Time: <br> </p>
+				<br>
+				<p id="infoName"> Event Name: <br> </p>
+				<br>
+				<p id="infoDescription"> Description: <br> </p>
+				<br>
+				<p id="infoLocation"> Location: <br> </p>
+				<br>
+				<button type="button" onclick="hideDisplay()"> Cancel </button>
+			</div>
+			<!-- <div id="conflictMenu">
+				<p> There is a scheduling conflict: <br> </p>
+				<br>
+				<button type="button" onclick="conflict1()" id="conflict1"> Remove : </button> <br>
+				<br>
+				<button type="button" onclick="conflict2()" id="conflict2"> Remove : </button> <br>
+				<br>
+				<button type="button" onclick="conflict3()" id="conflict3"> Keep Both </button>
+			</div> -->
 		</p1>
 		<table id="htmlgrid" class="testgrid">
 			<tr>
