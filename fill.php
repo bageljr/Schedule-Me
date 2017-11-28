@@ -1,6 +1,4 @@
 <?php
-		
-		$cellnum = $_GET['cellnum'];
 
 		$mysqli = new mysqli("127.0.0.1", "njelinsk", "njelinsk96", "Schedules", 3306);
 		if ($mysqli->connect_errno) 
@@ -9,11 +7,18 @@
 		}
 		
 		/*$sql = "select name from events where start_time <= $cellnum and end_time >= $cellnum";*/
-		$sql = "select name from events";
+		$sql = "select * from events";
 		$result = $mysqli->query($sql);
+		$arr = array();
 
 	    while($row = $result->fetch_assoc()) 
 	    {
-	        echo $row['name'];
+	    	$arr[0] = $row["start_time"];
+	    	$arr[1] = $row["start_date"];
+	    	$arr[2] = $row["end_time"];
+	    	$arr[3] = $row["end_date"];
+	    	$arr[4] = $row["name"];
+	        
+	        echo json_encode($arr);
 	    }
 ?>        
