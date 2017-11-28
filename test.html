@@ -213,10 +213,10 @@
 			}
 			
 			//final 18000000 is needed to offset time difference from UTC
-			startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+			/*startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
 			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
-			data[0].value =  startDate;
-			data[2].value =  endDate;
+			data[0].value = + startDate;
+			data[2].value = + endDate;*/
 			
 			//if (checkConflict(startCell, endCell)) {
 			for (i=0; i<(endCell-startCell); i++) {
@@ -332,10 +332,10 @@
 			}
 			
 			//final 18000000 is needed to offset time difference from UTC
-			startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+			/*startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
 			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
-			data[0].value =  startDate;
-			data[2].value =  endDate;
+			data[0].value = + startDate;
+			data[2].value = + endDate;*/
 			
 			//if (checkConflict(startCell, endCell)) {
 			for (i=0; i<(endCell-startCell); i++) {
@@ -586,8 +586,8 @@
 			endDate = new Date(endDate);
 			endDay = (endDate.getDay()+1)%7;
 			var eventName = data[4].value;
-			var startCell = (startTime.getHours() * 2) + (statTime.getMinutes() / 30) + (48 * startDay);
-			var endCell = (endTime.getHours() * 2) + (endTime.getMinutes() / 30) + (48 * endDay);
+			var startCell = parseInt(startTime) + (48 * startDay);
+			var endCell = parseInt(endTime) + (48 * endDay);
 			if (startDate < sunDay) {
 				startCell = 1;
 			}
