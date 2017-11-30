@@ -107,6 +107,19 @@
 				border: 1px solid #ccc;
 				background-color: #f3f3f3;
 			}
+			
+			#userNameForm {
+				display: block;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				width:30em;
+				height:18em;
+				margin-top: -9em; /*set to a negative number 1/2 of your height*/
+				margin-left: -15em; /*set to a negative number 1/2 of your width*/
+				border: 1px solid #ccc;
+				background-color: #f3f3f3;
+			}
 
 		</style>
 		
@@ -123,6 +136,7 @@
 				eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []}
 				//change to custom object with all of the event info, and number of events at that time
 			}
+			var user = "user";
 		</script>
 		
 		<script>
@@ -212,6 +226,7 @@
 				endCell = 337;
 			}
 			
+			data[7].value = user;
 			//final 18000000 is needed to offset time difference from UTC
 			/*startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
 			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
@@ -331,6 +346,7 @@
 				endCell = 337;
 			}
 			
+			data[7].value = user;
 			//final 18000000 is needed to offset time difference from UTC
 			/*startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
 			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
@@ -492,7 +508,16 @@
 			for (i=1; i<337; i++) {
 				var cell = i; 
 				document.getElementById(cell).innerHTML = "";
-				document.getElementById(cell).classList.remove('selected');
+				document.getElementById(cell).classList.remove('selected1');
+				document.getElementById(cell).classList.remove('selected2');
+				document.getElementById(cell).classList.remove('selected3');
+				document.getElementById(cell).classList.remove('selected4');
+				document.getElementById(cell).classList.remove('selected5');
+				document.getElementById(cell).classList.remove('selected6');
+				document.getElementById(cell).classList.remove('selected7');
+				document.getElementById(cell).classList.remove('selected8');
+				document.getElementById(cell).classList.remove('selected9');
+				document.getElementById(cell).classList.remove('selected10');
 			}
 			clearEventArray();
 		}
@@ -634,12 +659,28 @@
 		}
 		</script>
 		
+		<script>
+		function getUser() {
+			user = document.getElementById("userNameField").value;
+			var form = document.getElementById("userNameForm");
+			form.style.display = "none";
+		}
+		</script>
+		
 	</head>
 	
 	<body>
 		<h1>Schedule Me</h1>
-		<p id="test"></p>
-		<p1> 
+		<div id="test"></p>
+		<p1>
+			<div id="userNameForm">
+				<form id="Form">
+					User Name:<br>
+					<input type="text" name="userName" id="userNameField">
+					<br><br>
+					<input type="button" value="Submit" onclick="getUser()">
+				</form>
+			</div>
 			<button type="button" onclick="displayForm()"> Make new event </button>
 			<button type="button" onclick="prevWeek()"> < </button>
 			<button type="button" onclick="nextWeek()"> > </button>
@@ -760,6 +801,7 @@
 					Location:<br>
 					<input type="text" name="eventLocation">
 					<br><br>
+					<input type="hidden" name="puserName" value="user">
 					<input type="button" value="Submit" onclick="SubForm()">
 				</form>
 				<button type="button" onclick="hideForm()"> Cancel </button>
@@ -881,6 +923,7 @@
 					Location:<br>
 					<input type="text" name="peventLocation">
 					<br><br>
+					<input type="hidden" name="puserName" value="user">
 					<input type="button" value="Submit" onclick="pSubForm()">
 				</form>
 				<button type="button" onclick="phideForm()"> Cancel </button>
