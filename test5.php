@@ -803,7 +803,8 @@
 					<br>
 					Location:<br>
 					<input type="text" name="eventLocation">
-
+					<br>
+					<input type="hidden" name="username" value="<?php echo $_POST['username'] ?>">
 					<br><br>
 					<input type="button" value="Submit" onclick="SubForm()">
 				</form>

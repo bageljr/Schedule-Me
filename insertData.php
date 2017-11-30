@@ -17,9 +17,10 @@
     $eventName = $_POST['eventName'];
     $eventLocation = $_POST['eventLocation'];
     $eventDescription = $_POST['eventDescription'];
+    $username = $_POST['username'];
 
     $sql = "INSERT INTO events (start_time, start_date, end_time, end_date, name, user_name, location, description) 
-        VALUES ('$startTimeNum', '$startDate', '$endTimeNum', '$endDate', '$eventName', 'nolan', '$eventLocation', '$eventDescription')";
+        VALUES ('$startTimeNum', '$startDate', '$endTimeNum', '$endDate', '$eventName', '$username', '$eventLocation', '$eventDescription')";
         
     if ($mysqli->query($sql) === TRUE) 
     {
