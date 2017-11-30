@@ -28,6 +28,47 @@
 			td.selected {
 				background-color: red;
 			}
+			
+			td.selected1 {
+				background-color: #ff0000;
+			}
+			
+			td.selected2 {
+				background-color: #ff6600;
+			}
+			
+			td.selected3 {
+				background-color: #ff9933;
+			}
+			
+			td.selected4 {
+				background-color: #ffcc00;
+			}
+			
+			td.selected5 {
+				background-color: #ffff00;
+			}
+			
+			td.selected6 {
+				background-color: #ccff33;
+			}
+			
+			td.selected7 {
+				background-color: #99ff33;
+			}
+			
+			td.selected8 {
+				background-color: #66ff33;
+			}
+			
+			td.selected9 {
+				background-color: #33cc33;
+			}
+			
+			td.selected10 {
+				background-color: #00cc00;
+			}
+			
 			td.tempSelected {
 				background-color: red; 
 				opacity: .5;
@@ -66,6 +107,19 @@
 				border: 1px solid #ccc;
 				background-color: #f3f3f3;
 			}
+			
+			#userNameForm {
+				display: block;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				width:30em;
+				height:18em;
+				margin-top: -9em; /*set to a negative number 1/2 of your height*/
+				margin-left: -15em; /*set to a negative number 1/2 of your width*/
+				border: 1px solid #ccc;
+				background-color: #f3f3f3;
+			}
 
 		</style>
 		
@@ -82,6 +136,7 @@
 				eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []}
 				//change to custom object with all of the event info, and number of events at that time
 			}
+			var user = "user";
 		</script>
 		
 		<script>
@@ -171,18 +226,19 @@
 				endCell = 337;
 			}
 			
+			data[7].value = user;
 			//final 18000000 is needed to offset time difference from UTC
-			startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+			/*startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
 			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
 			data[0].value = + startDate;
-			data[2].value = + endDate;
+			data[2].value = + endDate;*/
 			
 			//if (checkConflict(startCell, endCell)) {
 			for (i=0; i<(endCell-startCell); i++) {
 				var cell = parseInt(startCell) + i;
 				if (eventArray[cell-1].numEvents == 0) {
 					document.getElementById(cell).innerHTML = eventName;
-					document.getElementById(cell).classList.add('selected');
+					document.getElementById(cell).classList.add('selected1');
 					eventArray[cell-1].eventNames[0] = eventName;
 					eventArray[cell-1].startTimes[0] = startDate;
 					eventArray[cell-1].endTimes[0] = endDate;
@@ -198,6 +254,7 @@
 					eventArray[cell-1].descriptions[eventArray[cell-1].numEvents] = data[5].value;
 					eventArray[cell-1].locations[eventArray[cell-1].numEvents] = data[6].value;
 					eventArray[cell-1].numEvents ++;
+					document.getElementById(cell).classList.add('selected'+eventArray[cell-1].numEvents);
 				}
 			}
 			//}
@@ -205,7 +262,7 @@
 			$.ajax({
 				url:'http://localhost/~nolanjelinski/insertData.php',
 				type:'post',
-				data:$('#Form').serialize(),
+				data:data,
 				success:function(){
 					alert("worked");
 				}
@@ -289,18 +346,19 @@
 				endCell = 337;
 			}
 			
+			data[7].value = user;
 			//final 18000000 is needed to offset time difference from UTC
-			startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+			/*startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
 			endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
 			data[0].value = + startDate;
-			data[2].value = + endDate;
+			data[2].value = + endDate;*/
 			
 			//if (checkConflict(startCell, endCell)) {
 			for (i=0; i<(endCell-startCell); i++) {
 				var cell = parseInt(startCell) + i;
 				if (eventArray[cell-1].numEvents == 0) {
 					document.getElementById(cell).innerHTML = eventName;
-					document.getElementById(cell).classList.add('selected');
+					document.getElementById(cell).classList.add('selected1');
 					eventArray[cell-1].eventNames[0] = eventName;
 					eventArray[cell-1].startTimes[0] = startDate;
 					eventArray[cell-1].endTimes[0] = endDate;
@@ -316,12 +374,13 @@
 					eventArray[cell-1].descriptions[eventArray[cell-1].numEvents] = data[5].value;
 					eventArray[cell-1].locations[eventArray[cell-1].numEvents] = data[6].value;
 					eventArray[cell-1].numEvents ++;
+					document.getElementById(cell).classList.add('selected'+eventArray[cell-1].numEvents);
 				}
 			}
 			//}
 			//Can be used to post data to external database
 			$.ajax({
-				url:'https://requestb.in/18tll211',
+				url:'http://localhost/~nolanjelinski/insertData.php',
 				type:'post',
 				data:data,
 				success:function(){
@@ -351,7 +410,7 @@
 			  firstCell = parseInt(firstCell);
 			  cellColumn = parseInt((firstCell-1)/48);
 			  lastCell = parseInt(firstCell);
-			  if ($('#'+firstCell).is('.selected')) {
+			  if (eventArray[firstCell-1].numEvents != 0) {
 				highlighted = true;
 				showDisplay(firstCell);
 			  }
@@ -449,8 +508,18 @@
 			for (i=1; i<337; i++) {
 				var cell = i; 
 				document.getElementById(cell).innerHTML = "";
-				document.getElementById(cell).classList.remove('selected');
+				document.getElementById(cell).classList.remove('selected1');
+				document.getElementById(cell).classList.remove('selected2');
+				document.getElementById(cell).classList.remove('selected3');
+				document.getElementById(cell).classList.remove('selected4');
+				document.getElementById(cell).classList.remove('selected5');
+				document.getElementById(cell).classList.remove('selected6');
+				document.getElementById(cell).classList.remove('selected7');
+				document.getElementById(cell).classList.remove('selected8');
+				document.getElementById(cell).classList.remove('selected9');
+				document.getElementById(cell).classList.remove('selected10');
 			}
+			clearEventArray();
 		}
 		</script>
 		
@@ -524,12 +593,94 @@
 		}
 		</script>
 		
+		<script>
+		function loadDates(data) {
+			//startTime, startDate, endTime, endDate, eventName, eventDescription eventLocation
+			var toDay = window.currentDate;
+			toDay = new Date(toDay + 18000000);
+			var currentWeekDay = toDay.getDay();
+			var sunDay = new Date(toDay - (86400000 * (currentWeekDay+1)));
+			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay)));  
+			var startTime = data[0].value;
+			var startDate = data[1].value;
+			startDate = new Date(startDate);
+			//The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
+			startDay = (startDate.getDay()+1)%7;
+			var endTime = data[2].value;
+			var endDate = data[3].value;
+			endDate = new Date(endDate);
+			endDay = (endDate.getDay()+1)%7;
+			var eventName = data[4].value;
+			var startCell = parseInt(startTime) + (48 * startDay);
+			var endCell = parseInt(endTime) + (48 * endDay);
+			if (startDate < sunDay) {
+				startCell = 1;
+			}
+			if (startDate > satDay) {
+				startCell = 337;
+			}
+			if (endDate < sunDay) {
+				endCell = 1;
+			}
+			if (endDate > satDay) {
+				endCell = 337;
+			}
+			
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i;
+				if (eventArray[cell-1].numEvents == 0) {
+					document.getElementById(cell).innerHTML = eventName;
+					document.getElementById(cell).classList.add('selected');
+					eventArray[cell-1].eventNames[0] = eventName;
+					eventArray[cell-1].startTimes[0] = startDate;
+					eventArray[cell-1].endTimes[0] = endDate;
+					eventArray[cell-1].descriptions[0] = data[5].value;
+					eventArray[cell-1].locations[0] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+				else {
+					document.getElementById(cell).insertAdjacentHTML('afterbegin', eventName+" / ");
+					eventArray[cell-1].eventNames[eventArray[cell-1].numEvents] = eventName;
+					eventArray[cell-1].startTimes[eventArray[cell-1].numEvents] = startDate;
+					eventArray[cell-1].endTimes[eventArray[cell-1].numEvents] = endDate;
+					eventArray[cell-1].descriptions[eventArray[cell-1].numEvents] = data[5].value;
+					eventArray[cell-1].locations[eventArray[cell-1].numEvents] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+			}
+		}
+		</script>
+		
+		<script>
+		function clearEventArray() {
+			for (i=0; i <336; i++) {
+				eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []}
+			}
+		}
+		</script>
+		
+		<script>
+		function getUser() {
+			user = document.getElementById("userNameField").value;
+			var form = document.getElementById("userNameForm");
+			form.style.display = "none";
+		}
+		</script>
+		
 	</head>
 	
 	<body>
 		<h1>Schedule Me</h1>
-		<p id="test"></p>
-		<p1> 
+		<div id="test"></p>
+		<p1>
+			<div id="userNameForm">
+				<form id="Form">
+					User Name:<br>
+					<input type="text" name="userName" id="userNameField">
+					<br><br>
+					<input type="button" value="Submit" onclick="getUser()">
+				</form>
+			</div>
 			<button type="button" onclick="displayForm()"> Make new event </button>
 			<button type="button" onclick="prevWeek()"> < </button>
 			<button type="button" onclick="nextWeek()"> > </button>
@@ -650,6 +801,7 @@
 					Location:<br>
 					<input type="text" name="eventLocation">
 					<br><br>
+					<input type="hidden" name="puserName" value="user">
 					<input type="button" value="Submit" onclick="SubForm()">
 				</form>
 				<button type="button" onclick="hideForm()"> Cancel </button>
@@ -771,6 +923,7 @@
 					Location:<br>
 					<input type="text" name="peventLocation">
 					<br><br>
+					<input type="hidden" name="puserName" value="user">
 					<input type="button" value="Submit" onclick="pSubForm()">
 				</form>
 				<button type="button" onclick="phideForm()"> Cancel </button>
