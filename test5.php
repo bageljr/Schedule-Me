@@ -1448,5 +1448,25 @@
 		</table>         
 </p>	
 	</body>
-	
+<p>
+<ul>
+<?php
+	$userName = $_POST['username'];
+	$mysqli = new mysqli("127.0.0.1", "njelinsk", "njelinsk96", "Schedules", 3306);
+    if ($mysqli->connect_errno) 
+    {
+        echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    }
+    $sql = "select groupname from usergroups where '$userName' = username";
+	$result = $mysqli->query($sql);
+ 	//$result = $mysqli->query($sql) or trigger_error("Query Failed! SQL: $sql - Error: ".mysqli_error(), E_USER_ERROR);
+
+ 	while($row = $result->fetch_assoc())
+	{
+	  echo '<li><a href=group.php?username='.$userName.'&groupName='.$row['groupname'].'>'.$row['groupname'].'</a></li>';
+	  //echo "Here";
+	}
+?>
+</ul>
+</p>	
 </html>

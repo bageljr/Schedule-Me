@@ -154,7 +154,7 @@
 		//On page load, gets the dates of the current weekdays and adds them to the table
 		window.onload = function() {
 			loadDate();
-			var count = fillIn();
+			fillIn();
 			
 		}
 		</script>
@@ -163,10 +163,11 @@
 
 			function count()
 			{
+				var groupn = "<?php echo $_GET['groupName'] ?>";
 				$.ajax({                                      
 	      				url:'http://localhost/~nolanjelinski/count.php',     
 	      				type: 'GET',
-	      				//data: {groupName: name},                                           
+	      				data: {group: groupn},                                           
 					    success: function(data)          
 					    {
 					    	var num = data;
@@ -176,13 +177,17 @@
 
 			function countEvents(j) // fills in with database info
 			{
+				var groupName = "<?php echo $_GET['groupName'] ?>";
+				var username = "<?php echo $_GET['username'] ?>";
+
 				$.ajax({                                      
 	      				url:'http://localhost/~nolanjelinski/countEvents.php',     
 	      				type: 'GET',
-	      				data: {cellnum: j},                                           
+	      				data: {cellnum: j, group: groupName, user: username},                                           
 					    success: function(data)          
 					    {
 					    	var numEvents = data;
+					    	
 					    	//colorSpace(numEvents, j);
 					    	if (numEvents > 0)
 					    	{
@@ -386,6 +391,7 @@
 			}
 			loadDate();
 			clearCalendar();
+			fillIn();
 		}
 		</script>
 		
@@ -400,6 +406,7 @@
 			}
 			loadDate();
 			clearCalendar();
+			fillIn();
 		}
 		</script>
 		
@@ -517,7 +524,6 @@
 		<h1>Schedule Me</h1>
 		<p id="test"></p>
 		<p1> 
-			<button type="button" onclick="displayForm()"> Make new event </button>
 			<button type="button" onclick="prevWeek()"> < </button>
 			<button type="button" onclick="nextWeek()"> > </button>
 			<button type="button" onclick="resetDate()" disabled id="Today"> Today </button>
