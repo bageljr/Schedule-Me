@@ -17,9 +17,62 @@
 			table.testgrid th { background: #E5E5E5; text-align: left; }
 			input.invalid { background: red; color: #FDFDFD; }
 			
-			td{ height: 20px; width: 100px;}
-			td.selected {background-color: red;}
-			td.tempSelected {background-color: red; opacity: .5}
+			td{ 
+				height: 20px;
+				width: 100px;
+				max-width: 100px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			td.selected {
+				background-color: red;
+			}
+			
+			td.selected1 {
+				background-color: #ff0000;
+			}
+			
+			td.selected2 {
+				background-color: #ff6600;
+			}
+			
+			td.selected3 {
+				background-color: #ff9933;
+			}
+			
+			td.selected4 {
+				background-color: #ffcc00;
+			}
+			
+			td.selected5 {
+				background-color: #ffff00;
+			}
+			
+			td.selected6 {
+				background-color: #ccff33;
+			}
+			
+			td.selected7 {
+				background-color: #99ff33;
+			}
+			
+			td.selected8 {
+				background-color: #66ff33;
+			}
+			
+			td.selected9 {
+				background-color: #33cc33;
+			}
+			
+			td.selected10 {
+				background-color: #00cc00;
+			}
+			
+			td.tempSelected {
+				background-color: red; 
+				opacity: .5;
+			}
 			
 			#eventForm {
 				display: none;
@@ -41,14 +94,43 @@
 				border: 1px solid #ccc;
 				background-color: #f3f3f3;
 			}
+			
+			#infoDisplay {
+				display: none;
+				position: fixed;
+				top: 50%;
+				left: 75%;
+				width:30em;
+				height:18em;
+				margin-top: -9em; /*set to a negative number 1/2 of your height*/
+				margin-left: -15em; /*set to a negative number 1/2 of your width*/
+				border: 1px solid #ccc;
+				background-color: #f3f3f3;
+			}
 
 		</style>
 		
 		<script>
-		window.onload = function() {
+		//currentDate is used to track the date of the calendar, finalDate stays constant to 
+			var currentDate = new Date();
+			currentDate = new Date(currentDate - 18000000);
+			var finalDate = new Date();
+			finalDate.setTime(currentDate.getTime());
+			var eventArray = [];
+			for (i=0; i <336; i++) {
+				eventArray[i]= i; //???
+				//eventArray[i] = {numEvents: 0, eventName: "", startTime: "", endTime: "", location: "", description: ""}
+				eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []}
+				//change to custom object with all of the event info, and number of events at that time
+			}
+		</script>
+		
+		<script>
+		//Updates the calendar with the value of currentDate
+		function loadDate() {
 			weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-			var toDay = new Date();
-			toDay = new Date(toDay + 14400000);
+			var toDay = window.currentDate;
+			toDay = new Date(toDay - 18000000);
 			var currentWeekDay = toDay.getDay();
 			var tempDay = toDay;
 			document.getElementById("w" + currentWeekDay).innerHTML = weekDays[toDay.getDay()] + " " + (toDay.getMonth()+1) + "/" + toDay.getDate();
@@ -65,38 +147,67 @@
 				var tempWeekDay = tempDay.getDay();
 				document.getElementById("w" + tempWeekDay).innerHTML = weekDays[tempDay.getDay()] + " " + (tempDay.getMonth()+1) + "/" + tempDay.getDate();
 			}
-			fillIn();
-			//document.getElementById("test").innerHTML = currentWeekDay;
 		}
 		</script>
-
+		
+		<script>
+		//On page load, gets the dates of the current weekdays and adds them to the table
+		window.onload = function() {
+			loadDate();
+			fillIn();
+			
+		}
+		</script>
+		
 		<script>
 
-			function populate(j) // fills in with database info
+			function count()
 			{
+				var groupn = "<?php echo $_GET['groupName'] ?>";
 				$.ajax({                                      
-	      				url:'http://localhost/~nolanjelinski/fill.php',     
+	      				url:'http://localhost/~nolanjelinski/count.php',     
 	      				type: 'GET',
-	      				data: {cellnum: j},                                           
+	      				data: {group: groupn},                                           
 					    success: function(data)          
 					    {
-					    	var event = data;
-					        document.getElementById(j).innerHTML = event; 
-					     	//document.getElementById(j).classList.add('selected');
+					    	var num = data;
+					    }
+	    			});
+			}
+
+			function countEvents(j) // fills in with database info
+			{
+				var groupName = "<?php echo $_GET['groupName'] ?>";
+				var username = "<?php echo $_GET['username'] ?>";
+
+				$.ajax({                                      
+	      				url:'http://localhost/~nolanjelinski/countEvents.php',     
+	      				type: 'GET',
+	      				data: {cellnum: j, group: groupName, user: username},                                           
+					    success: function(data)          
+					    {
+					    	var numEvents = data;
+					    	
+					    	//colorSpace(numEvents, j);
+					    	if (numEvents > 0)
+					    	{
+					    		document.getElementById(j).innerHTML = numEvents;
+					    	}
 					    }
 	    			});
 			}
 
 			function fillIn() // needs to call separate function outside of loop
 			{	    				
-				for (i = 1; i < 336; i++)
+				for (i = 1; i <= 336; i++)
 				{
-					populate(i);
+					countEvents(i);
 				}
 			}
 		</script>
 
 		<script>
+		//displays the create event form
 		function displayForm() {
 			setDefaultForm();
 			var form = document.getElementById("eventForm");
@@ -105,6 +216,7 @@
 		</script>
 		
 		<script>
+		//hides the create event form
 		function hideForm() {
 			var form = document.getElementById("eventForm");
 			form.style.display = "none";
@@ -112,77 +224,16 @@
 		</script>
 		
 		<script>
-            
-		function SubForm (){
-			var form = document.getElementById("eventForm");
-			form.style.display = "none";
-			
-			var toDay = new Date();
-			toDay = new Date(toDay + 14400000);
-			var currentWeekDay = toDay.getDay();
-			//Potential problem with remaining time in the day
-			var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
-			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay)));
-			var data = $('#Form').serializeArray();
-			var startTime = data[0].value;
-			var startDate = data[1].value;
-			var inputStartDate = new Date(startDate);
-			var inputStartDay = inputStartDate.getDay();
-			console.log(inputStartDay);
-			startDate = new Date(startDate);
-			//The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
-			startDay = (startDate.getDay()+1)%7;
-			data[1].value = startDay;
-			var endTime = data[2].value;
-			var endDate = data[3].value;
-			var inputEndDate = new Date(endDate);
-			var inputEndDay = inputEndDate.getDay();
-			endDate = new Date(endDate);
-			endDay = (endDate.getDay()+1)%7;
-			data[3].value = endDay;
-			var eventName = data[4].value;
-			var startCell = parseInt(startTime) + (48 * startDay);
-			var endCell = parseInt(endTime) + (48 * endDay);
-			if (startDate < sunDay) {
-				startCell = 1;
-			}
-			if (startDate > satDay) {
-				startCell = 337;
-			}
-			if (endDate < sunDay) {
-				endCell = 1;
-			}
-			if (endDate > satDay) {
-				endCell = 337;
-			}
-			for (i=0; i<(endCell-startCell); i++) {
-				var cell = parseInt(startCell) + i; 
-				document.getElementById(cell).innerHTML = eventName;
-				document.getElementById(cell).classList.add('selected');
-			}
-			
-			//Can be used to post data to external database
-			$.ajax({
-				url:'http://localhost/~nolanjelinski/insertData.php',
-				type:'post',
-				data: data,
-				success:function(){
-					//alert("worked");
-				}
-			});
-			
-		}
-		</script>
-		
-		<script>
+		//Resets the form to default values, including today's date
 		function setDefaultForm() {
 			document.getElementById('Form').reset();
-			document.getElementById('startDate').valueAsDate = new Date();
-			document.getElementById('endDate').valueAsDate = new Date();
+			document.getElementById('startDate').valueAsDate = new Date(currentDate);
+			document.getElementById('endDate').valueAsDate = new Date(currentDate);
 		}
 		</script>
 		
 		<script>
+		//Displays the popup form (when the user highlights boxes)
 		function pdisplayForm() {
 			var form = document.getElementById("popupForm");
 			form.style.display = "block";
@@ -193,6 +244,7 @@
 		</script>
 		
 		<script>
+		//Hides the popup form
 		function phideForm() {
 			var form = document.getElementById("popupForm");
 			form.style.display = "none";
@@ -206,65 +258,7 @@
 		</script>
 		
 		<script>
-		function pSubForm (){
-			var form = document.getElementById("popupForm");
-			form.style.display = "none";
-			for (i=1; i<=336; i++) { 
-				document.getElementById(i).classList.remove('tempSelected');
-			 }
-			
-			var toDay = new Date();
-			toDay = new Date(toDay + 14400000);
-			var currentWeekDay = toDay.getDay();
-			//Potential problem with remaining time in the day
-			var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
-			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay))); 
-			var data = $('#pForm').serializeArray();
-			var startTime = data[0].value;
-			var startDate = data[1].value;
-			startDate = new Date(startDate);
-			//The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
-			startDay = (startDate.getDay()+1)%7;
-			var endTime = data[2].value;
-			var endDate = data[3].value;
-			endDate = new Date(endDate);
-			endDay = (endDate.getDay()+1)%7;
-
-			var eventName = data[4].value;
-			var startCell = parseInt(startTime) + (48 * startDay);
-			var endCell = parseInt(endTime) + (48 * endDay);
-			if (startDate < sunDay) {
-				startCell = 1;
-			}
-			if (startDate > satDay) {
-				startCell = 337;
-			}
-			if (endDate < sunDay) {
-				endCell = 1;
-			}
-			if (endDate > satDay) {
-				endCell = 337;
-			}
-			for (i=0; i<(endCell-startCell); i++) {
-				var cell = parseInt(startCell) + i; 
-				document.getElementById(cell).innerHTML = eventName;
-				document.getElementById(cell).classList.add('selected');
-			}
-			
-			//Can be used to post data to external database
-			$.ajax({
-				url:'https://requestb.in/18tll211',
-				type:'post',
-				data:$('#Form').serializeArray(),
-				success:function(){
-					alert("worked");
-				}
-			});
-			
-		}
-		</script>
-		
-		<script>
+		//Highlights boxes when the user drags on boxes, when the user finishes opens the popup form with the information from the user's drag
 		$(function () {
 		//#TODO change the default date based on selection
 		  var isMouseDown = false;
@@ -273,6 +267,8 @@
 		  var lastCell = 0;
 		  var firstCellChanged = false;
 		  var lastCellChanged = false;
+		  var highlighted = false;
+		  var isNotTime = false;
 		  $("#htmlgrid td")
 			.mousedown(function () {
 			  isMouseDown = true;
@@ -280,11 +276,20 @@
 			  firstCell = parseInt(firstCell);
 			  cellColumn = parseInt((firstCell-1)/48);
 			  lastCell = parseInt(firstCell);
-			  $(this).toggleClass("tempSelected");
+			  if (eventArray[firstCell-1].numEvents != 0) {
+				highlighted = true;
+				showDisplay(firstCell);
+			  }
+			  else if (!(firstCell > 0) && !(lastCell < 336)) {
+				isNotTime = true;
+			  }
+			  else {
+				$(this).toggleClass("tempSelected");
+			  }
 			  return false; // prevent text selection
 			})
 			.mouseover(function () {
-			  if (isMouseDown) {
+			  if ((isMouseDown) && !(highlighted)) {
 				var currentCell = parseInt($(this).attr('id'));
 				if (parseInt((currentCell-1)/48) == cellColumn) {
 					if (currentCell < firstCell) {
@@ -325,34 +330,192 @@
 		  
 		  $("#htmlgrid td")
 			.mouseup(function () {
-			  pdisplayForm();
-			  document.getElementById('pForm').reset();
-			  document.getElementById("pstartTime").value = (firstCell%48);
-			  document.getElementById("pendTime").value = ((lastCell+1)%48);
-			  if (firstCell%48 == 0) {
-				document.getElementById("pstartTime").value = "48";
+			  if (!highlighted && !isNotTime) {
+				  var is12 = false;
+				  pdisplayForm();
+				  document.getElementById('pForm').reset();
+				  document.getElementById("pstartTime").value = (firstCell%48);
+				  document.getElementById("pendTime").value = ((lastCell%48)+1);
+				  if (firstCell%48 == 0) {
+					document.getElementById("pstartTime").value = "48";
+				  }
+				  if (lastCell%48 == 0) {
+					is12 = true;
+				  }
+				  var toDay = window.currentDate;
+				  toDay = new Date(toDay - 18000000);
+				  var currentWeekDay = toDay.getDay();
+				  var dayDiff = cellColumn - currentWeekDay;
+				  var currentDay = new Date(toDay.setDate(toDay.getDate() + dayDiff));
+				  
+				  document.getElementById('pstartDate').valueAsDate = currentDay;
+				  document.getElementById('pendDate').valueAsDate = currentDay;
+				  if (is12 == true) {
+					tomorrow = new Date(currentDay.setDate(currentDay.getDate()+1));
+					document.getElementById('pendDate').valueAsDate = tomorrow;
+				  }
+				  
 			  }
-			  if ((lastCell%48+1) == 0) {
-				document.getElementById("pendTime").value = "48";
-			  }
-			  var toDay = new Date();
-			  toDay = new Date(toDay + 14400000);
-			  var currentWeekDay = toDay.getDay();
-			  var dayDiff = cellColumn - currentWeekDay;
-			  var currentDay = new Date(toDay.setDate(toDay.getDate() + dayDiff));
-			  
-			  document.getElementById('pstartDate').valueAsDate = currentDay;
-			  document.getElementById('pendDate').valueAsDate = currentDay;
 			  
 			  firstCellChanged = false;
 			  lastCellChanged = false;
 			  isMouseDown = false;
+			  highlighted = false;
+			  isNotTime = false;
 			  firstCell = 0;
 			  cellColumn = 0;
 			  lastCell = 0;
-			  //TODO add popup instead of displayForm, make temp selected stay until form is dealt with
 			});
 		});
+		</script>
+		
+		<script>
+		function clearCalendar() {
+			for (i=1; i<337; i++) {
+				var cell = i; 
+				document.getElementById(cell).innerHTML = "";
+				document.getElementById(cell).classList.remove('selected');
+			}
+			clearEventArray();
+		}
+		</script>
+		
+		<script>
+		function prevWeek() {
+			window.currentDate = new Date(window.currentDate - 604800000);
+			if (window.currentDate.getTime() === window.finalDate.getTime()) {
+				document.getElementById("Today").disabled = true;
+			}
+			else {
+				document.getElementById("Today").disabled = false;
+			}
+			loadDate();
+			clearCalendar();
+			fillIn();
+		}
+		</script>
+		
+		<script>
+		function nextWeek() {
+			window.currentDate.setTime(window.currentDate.getTime() + 604800000);
+			if (window.currentDate.getTime() === window.finalDate.getTime()) {
+				document.getElementById("Today").disabled = true;
+			}
+			else {
+				document.getElementById("Today").disabled = false;
+			}
+			loadDate();
+			clearCalendar();
+			fillIn();
+		}
+		</script>
+		
+		<script>
+		function resetDate() {
+			window.currentDate.setTime(window.finalDate.getTime());
+			//window.finalDate = new Date();
+			document.getElementById("Today").disabled = true;
+			loadDate();
+			clearCalendar();
+		}
+		</script>
+		
+		<script>
+		function checkConflict(startCell, endCell) {
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i;
+				if($('#'+cell).is('.selected')) {
+					alert("Schedule conflict");
+					return false;
+				}
+			}
+			return true;
+		}
+		</script>
+		
+		<script>
+		function showDisplay(cell) {
+			var info = document.getElementById("infoDisplay");
+			info.style.display = "block";
+			document.getElementById("infoStart").innerHTML = "Start Time: " + eventArray[cell-1].startTimes;
+			document.getElementById("infoEnd").innerHTML = "End Time: " + eventArray[cell-1].endTimes;
+			document.getElementById("infoName").innerHTML = "Event Name: " + eventArray[cell-1].eventNames;
+			document.getElementById("infoDescription").innerHTML = "Description: " + eventArray[cell-1].descriptions;
+			document.getElementById("infoLocation").innerHTML = "Location: " + eventArray[cell-1].locations;
+		}
+		</script>
+		
+		<script>
+		function hideDisplay() {
+			var info = document.getElementById("infoDisplay");
+			info.style.display = "none";
+		}
+		</script>
+		
+		<script>
+		function loadDates(data) {
+			//startTime, startDate, endTime, endDate, eventName, eventDescription eventLocation
+			var toDay = window.currentDate;
+			toDay = new Date(toDay + 18000000);
+			var currentWeekDay = toDay.getDay();
+			var sunDay = new Date(toDay - (86400000 * (currentWeekDay+1)));
+			var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay)));  
+			var startTime = data[0].value;
+			var startDate = data[1].value;
+			startDate = new Date(startDate);
+			//The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
+			startDay = (startDate.getDay()+1)%7;
+			var endTime = data[2].value;
+			var endDate = data[3].value;
+			endDate = new Date(endDate);
+			endDay = (endDate.getDay()+1)%7;
+			var eventName = data[4].value;
+			var startCell = (startTime.getHours() * 2) + (statTime.getMinutes() / 30) + (48 * startDay);
+			var endCell = (endTime.getHours() * 2) + (endTime.getMinutes() / 30) + (48 * endDay);
+			if (startDate < sunDay) {
+				startCell = 1;
+			}
+			if (startDate > satDay) {
+				startCell = 337;
+			}
+			if (endDate < sunDay) {
+				endCell = 1;
+			}
+			if (endDate > satDay) {
+				endCell = 337;
+			}
+			
+			for (i=0; i<(endCell-startCell); i++) {
+				var cell = parseInt(startCell) + i;
+				if (eventArray[cell-1].numEvents == 0) {
+					document.getElementById(cell).innerHTML = eventName;
+					document.getElementById(cell).classList.add('selected');
+					eventArray[cell-1].eventNames[0] = eventName;
+					eventArray[cell-1].startTimes[0] = startDate;
+					eventArray[cell-1].endTimes[0] = endDate;
+					eventArray[cell-1].descriptions[0] = data[5].value;
+					eventArray[cell-1].locations[0] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+				else {
+					document.getElementById(cell).insertAdjacentHTML('afterbegin', eventName+" / ");
+					eventArray[cell-1].eventNames[eventArray[cell-1].numEvents] = eventName;
+					eventArray[cell-1].startTimes[eventArray[cell-1].numEvents] = startDate;
+					eventArray[cell-1].endTimes[eventArray[cell-1].numEvents] = endDate;
+					eventArray[cell-1].descriptions[eventArray[cell-1].numEvents] = data[5].value;
+					eventArray[cell-1].locations[eventArray[cell-1].numEvents] = data[6].value;
+					eventArray[cell-1].numEvents ++;
+				}
+			}
+		}
+		</script>
+		
+		<script>
+		function clearEventArray() {
+			for (i=0; i <336; i++) {
+				eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []}
+			}
+		}
 		</script>
 		
 	</head>
@@ -361,249 +524,9 @@
 		<h1>Schedule Me</h1>
 		<p id="test"></p>
 		<p1> 
-			<button type="button" onclick="displayForm()"> Make new event </button>
-			<div id="eventForm">
-				<form id="Form">
-					Start Time:<br>
-					<!-- <input type="time" name="startTime"> -->
-					<select name="startTime" id="startTime">
-						<option value="1">12:00AM</option>
-						<option value="2">12:30AM</option>
-						<option value="3">1:00AM</option>
-						<option value="4">1:30AM</option>
-						<option value="5">2:00AM</option>
-						<option value="6">2:30AM</option>
-						<option value="7">3:00AM</option>
-						<option value="8">3:30AM</option>
-						<option value="9">4:00AM</option>
-						<option value="10">4:30AM</option>
-						<option value="11">5:00AM</option>
-						<option value="12">5:30AM</option>
-						<option value="13">6:00AM</option>
-						<option value="14">6:30AM</option>
-						<option value="15">7:00AM</option>
-						<option value="16">7:30AM</option>
-						<option value="17">8:00AM</option>
-						<option value="18">8:30AM</option>
-						<option value="19">9:00AM</option>
-						<option value="20">9:30AM</option>
-						<option value="21">10:00AM</option>
-						<option value="22">10:30AM</option>
-						<option value="23">11:00AM</option>
-						<option value="24">11:30AM</option>
-						<option value="25">12:00PM</option>
-						<option value="26">12:30PM</option>
-						<option value="27">1:00PM</option>
-						<option value="28">1:30PM</option>
-						<option value="29">2:00PM</option>
-						<option value="30">2:30PM</option>
-						<option value="31">3:00PM</option>
-						<option value="32">3:30PM</option>
-						<option value="33">4:00PM</option>
-						<option value="34">4:30PM</option>
-						<option value="35">5:00PM</option>
-						<option value="36">5:30PM</option>
-						<option value="37">6:00PM</option>
-						<option value="38">6:30PM</option>
-						<option value="39">7:00PM</option>
-						<option value="40">7:30PM</option>
-						<option value="41">8:00PM</option>
-						<option value="42">8:30PM</option>
-						<option value="43">9:00PM</option>
-						<option value="44">9:30PM</option>
-						<option value="45">10:00PM</option>
-						<option value="46">10:30PM</option>
-						<option value="47">11:00PM</option>
-						<option value="48">11:30PM</option>
-					<input type="date" name="startDate" id="startDate">
-					<br>
-					End Time:<br>
-					<select name="endTime" id="endTime">
-						<option value="1">12:00AM</option>
-						<option value="2">12:30AM</option>
-						<option value="3">1:00AM</option>
-						<option value="4">1:30AM</option>
-						<option value="5">2:00AM</option>
-						<option value="6">2:30AM</option>
-						<option value="7">3:00AM</option>
-						<option value="8">3:30AM</option>
-						<option value="9">4:00AM</option>
-						<option value="10">4:30AM</option>
-						<option value="11">5:00AM</option>
-						<option value="12">5:30AM</option>
-						<option value="13">6:00AM</option>
-						<option value="14">6:30AM</option>
-						<option value="15">7:00AM</option>
-						<option value="16">7:30AM</option>
-						<option value="17">8:00AM</option>
-						<option value="18">8:30AM</option>
-						<option value="19">9:00AM</option>
-						<option value="20">9:30AM</option>
-						<option value="21">10:00AM</option>
-						<option value="22">10:30AM</option>
-						<option value="23">11:00AM</option>
-						<option value="24">11:30AM</option>
-						<option value="25">12:00PM</option>
-						<option value="26">12:30PM</option>
-						<option value="27">1:00PM</option>
-						<option value="28">1:30PM</option>
-						<option value="29">2:00PM</option>
-						<option value="30">2:30PM</option>
-						<option value="31">3:00PM</option>
-						<option value="32">3:30PM</option>
-						<option value="33">4:00PM</option>
-						<option value="34">4:30PM</option>
-						<option value="35">5:00PM</option>
-						<option value="36">5:30PM</option>
-						<option value="37">6:00PM</option>
-						<option value="38">6:30PM</option>
-						<option value="39">7:00PM</option>
-						<option value="40">7:30PM</option>
-						<option value="41">8:00PM</option>
-						<option value="42">8:30PM</option>
-						<option value="43">9:00PM</option>
-						<option value="44">9:30PM</option>
-						<option value="45">10:00PM</option>
-						<option value="46">10:30PM</option>
-						<option value="47">11:00PM</option>
-						<option value="48">11:30PM</option>
-					<input type="date" name="endDate" id="endDate">
-					<br>
-					Event Name: <br>
-					<input type="text" name="eventName">
-					<br>
-					Description:<br>
-					<input type="text" name="eventDescription">
-					<br>
-					Location:<br>
-					<input type="text" name="eventLocation">
-					<br><br>
-					<input type="button" value="Submit" onclick="SubForm()">
-				</form>
-				<button type="button" onclick="hideForm()"> Cancel </button>
-			</div>
-			
-			<div id="popupForm">
-				<form id="pForm">
-					Start Time:<br>
-					<!-- <input type="time" name="startTime"> -->
-					<select name="pstartTime" id="pstartTime">
-						<option value="1">12:00AM</option>
-						<option value="2">12:30AM</option>
-						<option value="3">1:00AM</option>
-						<option value="4">1:30AM</option>
-						<option value="5">2:00AM</option>
-						<option value="6">2:30AM</option>
-						<option value="7">3:00AM</option>
-						<option value="8">3:30AM</option>
-						<option value="9">4:00AM</option>
-						<option value="10">4:30AM</option>
-						<option value="11">5:00AM</option>
-						<option value="12">5:30AM</option>
-						<option value="13">6:00AM</option>
-						<option value="14">6:30AM</option>
-						<option value="15">7:00AM</option>
-						<option value="16">7:30AM</option>
-						<option value="17">8:00AM</option>
-						<option value="18">8:30AM</option>
-						<option value="19">9:00AM</option>
-						<option value="20">9:30AM</option>
-						<option value="21">10:00AM</option>
-						<option value="22">10:30AM</option>
-						<option value="23">11:00AM</option>
-						<option value="24">11:30AM</option>
-						<option value="25">12:00PM</option>
-						<option value="26">12:30PM</option>
-						<option value="27">1:00PM</option>
-						<option value="28">1:30PM</option>
-						<option value="29">2:00PM</option>
-						<option value="30">2:30PM</option>
-						<option value="31">3:00PM</option>
-						<option value="32">3:30PM</option>
-						<option value="33">4:00PM</option>
-						<option value="34">4:30PM</option>
-						<option value="35">5:00PM</option>
-						<option value="36">5:30PM</option>
-						<option value="37">6:00PM</option>
-						<option value="38">6:30PM</option>
-						<option value="39">7:00PM</option>
-						<option value="40">7:30PM</option>
-						<option value="41">8:00PM</option>
-						<option value="42">8:30PM</option>
-						<option value="43">9:00PM</option>
-						<option value="44">9:30PM</option>
-						<option value="45">10:00PM</option>
-						<option value="46">10:30PM</option>
-						<option value="47">11:00PM</option>
-						<option value="48">11:30PM</option>
-					<input type="date" name="pstartDate" id="pstartDate">
-					<br>
-					End Time:<br>
-					<select name="pendTime" id="pendTime">
-						<option value="1">12:00AM</option>
-						<option value="2">12:30AM</option>
-						<option value="3">1:00AM</option>
-						<option value="4">1:30AM</option>
-						<option value="5">2:00AM</option>
-						<option value="6">2:30AM</option>
-						<option value="7">3:00AM</option>
-						<option value="8">3:30AM</option>
-						<option value="9">4:00AM</option>
-						<option value="10">4:30AM</option>
-						<option value="11">5:00AM</option>
-						<option value="12">5:30AM</option>
-						<option value="13">6:00AM</option>
-						<option value="14">6:30AM</option>
-						<option value="15">7:00AM</option>
-						<option value="16">7:30AM</option>
-						<option value="17">8:00AM</option>
-						<option value="18">8:30AM</option>
-						<option value="19">9:00AM</option>
-						<option value="20">9:30AM</option>
-						<option value="21">10:00AM</option>
-						<option value="22">10:30AM</option>
-						<option value="23">11:00AM</option>
-						<option value="24">11:30AM</option>
-						<option value="25">12:00PM</option>
-						<option value="26">12:30PM</option>
-						<option value="27">1:00PM</option>
-						<option value="28">1:30PM</option>
-						<option value="29">2:00PM</option>
-						<option value="30">2:30PM</option>
-						<option value="31">3:00PM</option>
-						<option value="32">3:30PM</option>
-						<option value="33">4:00PM</option>
-						<option value="34">4:30PM</option>
-						<option value="35">5:00PM</option>
-						<option value="36">5:30PM</option>
-						<option value="37">6:00PM</option>
-						<option value="38">6:30PM</option>
-						<option value="39">7:00PM</option>
-						<option value="40">7:30PM</option>
-						<option value="41">8:00PM</option>
-						<option value="42">8:30PM</option>
-						<option value="43">9:00PM</option>
-						<option value="44">9:30PM</option>
-						<option value="45">10:00PM</option>
-						<option value="46">10:30PM</option>
-						<option value="47">11:00PM</option>
-						<option value="48">11:30PM</option>
-					<input type="date" name="pendDate" id="pendDate">
-					<br>
-					Event Name: <br>
-					<input type="text" name="peventName">
-					<br>
-					Description:<br>
-					<input type="text" name="peventDescription">
-					<br>
-					Location:<br>
-					<input type="text" name="peventLocation">
-					<br><br>
-					<input type="button" value="Submit" onclick="pSubForm()">
-				</form>
-				<button type="button" onclick="phideForm()"> Cancel </button>
-			</div>
-				
+			<button type="button" onclick="prevWeek()"> < </button>
+			<button type="button" onclick="nextWeek()"> > </button>
+			<button type="button" onclick="resetDate()" disabled id="Today"> Today </button>
 		</p1>
 		<table id="htmlgrid" class="testgrid">
 			<tr>
@@ -1096,10 +1019,8 @@
 				<td id="288"></td>
 				<td id="336"></td>
 			</tr>
-		</table>
-		<p>
-			<script type="text/javascript"></script>
-		</p>
+		</table>         
+</p>
 	</body>
 	
 </html>
