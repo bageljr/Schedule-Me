@@ -108,9 +108,9 @@
 				background-color: #f3f3f3;
 			}
 			
-			#groupForm {
+			<!---#groupForm {
 				display: none;
-			}
+			}-->
 
 		</style>
 		
@@ -684,7 +684,7 @@
 		
 		<script>
 		function submitGroup() {
-			var form = document.getElementById("groupForm");
+			var form = document.getElementById("gForm");
 			form.style.display = "none";
 			var data = $('#groupForm').serializeArray();
 			//submit group to database
