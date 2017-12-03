@@ -154,7 +154,8 @@
 		//On page load, gets the dates of the current weekdays and adds them to the table
 		window.onload = function() {
 			loadDate();
-			fillIn();
+			var results = count();
+			fillIn(results);
 			
 		}
 		</script>
@@ -173,12 +174,14 @@
 					    	var num = data;
 					    }
 	    			});
+				return num;
 			}
 
-			function countEvents(j) // fills in with database info
+			function countEvents(j, results) // fills in with database info
 			{
 				var groupName = "<?php echo $_GET['groupName'] ?>";
 				var username = "<?php echo $_GET['username'] ?>";
+				var numUsers = results;
 
 				$.ajax({                                      
 	      				url:'http://localhost/~nolanjelinski/countEvents.php',     
@@ -188,7 +191,7 @@
 					    {
 					    	var numEvents = data;
 					    	
-					    	//colorSpace(numEvents, j);
+					    	colorSpace(numUsers, j, numEvents);
 					    	if (numEvents > 0)
 					    	{
 					    		document.getElementById(j).innerHTML = numEvents;
@@ -197,11 +200,11 @@
 	    			});
 			}
 
-			function fillIn() // needs to call separate function outside of loop
+			function fillIn(results) // needs to call separate function outside of loop
 			{	    				
 				for (i = 1; i <= 336; i++)
 				{
-					countEvents(i);
+					countEvents(i, results);
 				}
 			}
 		</script>
