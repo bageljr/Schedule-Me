@@ -208,11 +208,13 @@
 				}
 			}
 		</script>
+		
 		<script>
 		function colorSpace(numUsers, j, numEvents) {
 			var color = numEvents/numUsers;
 			color = color * 10;
 			color = Math.round(color);
+			color = Math.trunc(color);
 			document.getElementById(j).classList.add('selected'+color);
 		}
 		</script>
