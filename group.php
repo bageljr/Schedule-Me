@@ -29,44 +29,48 @@
 				background-color: red;
 			}
 			
-			td.selected1 {
+			td.selected10 {
 				background-color: #ff0000;
 			}
 			
-			td.selected2 {
+			td.selected9 {
 				background-color: #ff6600;
 			}
 			
-			td.selected3 {
+			td.selected8 {
 				background-color: #ff9933;
 			}
 			
-			td.selected4 {
+			td.selected7 {
 				background-color: #ffcc00;
 			}
 			
-			td.selected5 {
+			td.selected6 {
 				background-color: #ffff00;
 			}
 			
-			td.selected6 {
+			td.selected5 {
 				background-color: #ccff33;
 			}
 			
-			td.selected7 {
+			td.selected4 {
 				background-color: #99ff33;
 			}
 			
-			td.selected8 {
+			td.selected3 {
 				background-color: #66ff33;
 			}
 			
-			td.selected9 {
+			td.selected2 {
 				background-color: #33cc33;
 			}
 			
-			td.selected10 {
+			td.selected1 {
 				background-color: #00cc00;
+			}
+
+			td.selected0 {
+				background-color: #00ff00;
 			}
 			
 			td.tempSelected {
@@ -155,7 +159,6 @@
 		window.onload = function() {
 			loadDate();
 			var results = count();
-			fillIn(results);
 			
 		}
 		</script>
@@ -171,10 +174,9 @@
 	      				data: {group: groupn},                                           
 					    success: function(data)          
 					    {
-					    	var num = data;
+					    	fillIn(data);
 					    }
 	    			});
-				return num;
 			}
 
 			function countEvents(j, results) // fills in with database info
@@ -190,12 +192,9 @@
 					    success: function(data)          
 					    {
 					    	var numEvents = data;
-					    	
-					    	colorSpace(numUsers, j, numEvents);
-					    	if (numEvents > 0)
-					    	{
-					    		document.getElementById(j).innerHTML = numEvents;
-					    	}
+
+					    		colorSpace(numUsers, j, numEvents);
+					    		//document.getElementById(j).innerHTML = numEvents;
 					    }
 	    			});
 			}
@@ -208,14 +207,15 @@
 				}
 			}
 		</script>
-		function colorSpace(numUsers, j, numEvents) {
+
+		<script>
+			function colorSpace(numUsers, j, numEvents) {
 			var color = numEvents/numUsers;
 			color = color * 10;
 			color = Math.round(color);
 			document.getElementById(j).classList.add('selected'+color);
+			//document.getElementById(j).innerHTML = color;
 		}
-		<script>
-		
 		</script>
 
 		<script>
