@@ -107,6 +107,10 @@
 				border: 1px solid #ccc;
 				background-color: #f3f3f3;
 			}
+			
+			#groupForm {
+				display: none;
+			}
 
 		</style>
 		
@@ -678,6 +682,22 @@
 		}
 		</script>
 		
+		<script>
+		function submitGroup() {
+			var form = document.getElementById("groupForm");
+			form.style.display = "none";
+			var data = $('#groupForm').serializeArray();
+			//submit group to database
+		}
+		</script>
+		
+		<script>
+		function showGroup() {
+			var form = document.getElementById("groupForm");
+			form.style.display = "block";
+		}
+		</script>
+		
 	</head>
 	
 	<body>
@@ -688,6 +708,17 @@
 			<button type="button" onclick="prevWeek()"> < </button>
 			<button type="button" onclick="nextWeek()"> > </button>
 			<button type="button" onclick="resetDate()" disabled id="Today"> Today </button>
+			<br>
+			<button type="button" onclcik="showGroup()"> Make Group </button>
+			<br>
+			<div id="groupForm">
+				<form id="gForm">
+					Group Name:<br>
+					<input type="text" name="groupName"> <br>
+					<input type="hidden" name="username" value="<?php echo $_POST['username'] ?>">
+					<input type="button" value="Submit" onclick="submitGroup()">
+				</form>
+			</div>
 			<div id="eventForm">
 				<form id="Form">
 					Start Time:<br>
