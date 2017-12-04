@@ -709,7 +709,7 @@
 			<button type="button" onclick="nextWeek()"> > </button>
 			<button type="button" onclick="resetDate()" disabled id="Today"> Today </button>
 			<br>
-			<button type="button" onclcik="showGroup()"> Make Group </button>
+			<button type="button" onclick="showGroup()"> Make Group </button>
 			<br>
 			<div id="groupForm">
 				<form id="gForm">
