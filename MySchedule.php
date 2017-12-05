@@ -158,6 +158,10 @@
         -moz-border-radius: 10px;
         border-radius: 10px;
     }
+	
+	#panel-body {
+		
+	}
     
     @-webkit-keyframes myanim {
         0% {
@@ -282,7 +286,7 @@
             </div>
             <!-- /.row -->
                 <div class="col-lg-8">
-                    <div class="panel panel-default" id="svg" style="height: 1365px; width: 833px">
+                    <div class="panel panel-default" id="svg" style="width: 833px;">
                         <div class="panel-heading">
                             <i class="fa fa-calendar fa-fw"></i> My Calendar
                             <div class="pull-right">
@@ -439,7 +443,7 @@
                         </div>
                         <!-- /.panel-heading -->
                         <!-- MY CALENDAR BODY BEGINS -->
-                        <div class="panel-body">
+                        <div class="panel-body" style="height:800px; overflow-y:auto">
                             <!--<ul id="customer-timeline">
                                 </ul>-->
                             <html>
@@ -597,6 +601,7 @@
                                         var val = "<?php echo $_POST['username'] ?>";
                                         loadDate();
                                         fillIn();
+										setDefaultForm();
                                     }
                                     </script>
                                     
@@ -653,20 +658,22 @@
                                         var val = "<?php echo $_POST['username'] ?>";
                                         //var form = document.getElementById("eventForm");
                                         //form.style.display = "none";
-                                        
+										for (i=1; i<=336; i++) { 
+                                            document.getElementById(i).classList.remove('tempSelected');
+                                         }
                                         var toDay = new Date();
-                                        toDay = new Date(toDay + 14400000);
+                                        toDay = new Date(toDay + 18000000);
                                         var currentWeekDay = toDay.getDay();
                                         //Potential problem with remaining time in the day
-                                        var sunDay = new Date(toDay - (86400000 * currentWeekDay));//.setDate(toDay.getDate()-currentWeekDay));
+                                        var sunDay = new Date(toDay - (86400000 * (currentWeekDay+1)));//.setDate(toDay.getDate()-currentWeekDay));
                                         var satDay = new Date(toDay.setDate(toDay.getDate()+(6-currentWeekDay))); //+ (86400000 * (6-currentWeekDay)));
                                         var data = $('#Form').serializeArray();
                                         var startTime = data[0].value;
                                         var startDate = data[1].value;
+										startDate = new Date(startDate);
                                         var inputStartDate = new Date(startDate);
                                         var inputStartDay = inputStartDate.getDay();
                                         console.log(inputStartDay);
-                                        startDate = new Date(startDate);
                                         //The date generated is behind by one day because of time zone conversions, to compensate 1 is added to to move it up 
                                         startDay = (startDate.getDay()+1)%7;
                                         data[1].value = startDay;
@@ -692,16 +699,16 @@
                                         if (endDate > satDay) {
                                             endCell = 337;
                                         }
-                                        for (i=0; i<(endCell-startCell); i++) {
+                                        /*for (i=0; i<(endCell-startCell); i++) {
                                             var cell = parseInt(startCell) + i; 
                                             document.getElementById(cell).innerHTML = eventName;
                                             document.getElementById(cell).classList.add('selected');
-                                        }
+                                        }*/
                                         
                                         //final 18000000 is needed to offset time difference from UTC
-                                        /*startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
+                                        startDate.setTime(startDate.getTime() + (1800000 * (parseInt(startTime)-1)) + 18000000);
                                         endDate.setTime(endDate.getTime() + (1800000 * (parseInt(endTime)-1)) + 18000000);
-                                        data[0].value = + startDate;
+                                        /*data[0].value = + startDate;
                                         data[2].value = + endDate;*/
                                         
                                         //if (checkConflict(startCell, endCell)) {
@@ -709,7 +716,7 @@
                                             var cell = parseInt(startCell) + i;
                                             if (eventArray[cell-1].numEvents == 0) {
                                                 document.getElementById(cell).innerHTML = eventName;
-                                                document.getElementById(cell).classList.add('selected1');
+                                                document.getElementById(cell).classList.add('selected');
                                                 eventArray[cell-1].eventNames[0] = eventName;
                                                 eventArray[cell-1].startTimes[0] = startDate;
                                                 eventArray[cell-1].endTimes[0] = endDate;
@@ -728,6 +735,7 @@
                                                 document.getElementById(cell).classList.add('selected'+eventArray[cell-1].numEvents);
                                             }
                                         }
+										setDefaultForm();
                                         //}
                                         //Can be used to post data to external database
                                         $.ajax({
@@ -934,14 +942,17 @@
                                       
                                       $("#htmlgrid td")
                                         .mouseup(function () {
+											for (i=1; i<=336; i++) { 
+												document.getElementById(i).classList.remove('tempSelected');
+											 }
                                           if (!highlighted && !isNotTime) {
                                               var is12 = false;
-                                              pdisplayForm();
-                                              document.getElementById('pForm').reset();
-                                              document.getElementById("pstartTime").value = (firstCell%48);
-                                              document.getElementById("pendTime").value = ((lastCell%48)+1);
+                                              displayForm();
+                                              document.getElementById('Form').reset();
+                                              document.getElementById("startTime").value = (firstCell%48);
+                                              document.getElementById("endTime").value = ((lastCell%48)+1);
                                               if (firstCell%48 == 0) {
-                                                document.getElementById("pstartTime").value = "48";
+                                                document.getElementById("startTime").value = "48";
                                               }
                                               if (lastCell%48 == 0) {
                                                 is12 = true;
@@ -952,11 +963,11 @@
                                               var dayDiff = cellColumn - currentWeekDay;
                                               var currentDay = new Date(toDay.setDate(toDay.getDate() + dayDiff));
                                               
-                                              document.getElementById('pstartDate').valueAsDate = currentDay;
-                                              document.getElementById('pendDate').valueAsDate = currentDay;
+                                              document.getElementById('startDate').valueAsDate = currentDay;
+                                              document.getElementById('endDate').valueAsDate = currentDay;
                                               if (is12 == true) {
                                                 tomorrow = new Date(currentDay.setDate(currentDay.getDate()+1));
-                                                document.getElementById('pendDate').valueAsDate = tomorrow;
+                                                document.getElementById('endDate').valueAsDate = tomorrow;
                                               }
                                               
                                           }
@@ -1059,6 +1070,8 @@
                                         document.getElementById("infoName").innerHTML = "Event Name: " + eventArray[cell-1].eventNames;
                                         document.getElementById("infoDescription").innerHTML = "Description: " + eventArray[cell-1].descriptions;
                                         document.getElementById("infoLocation").innerHTML = "Location: " + eventArray[cell-1].locations;
+										document.getElementById("infoCell").innerHTML = cell;
+										//deletecell = cell;
                                     }
                                     </script>
                                     
@@ -1130,7 +1143,7 @@
                                     <script>
                                     function clearEventArray() {
                                         for (i=0; i <336; i++) {
-                                            eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []}
+                                            eventArray[i] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []};
                                         }
                                     }
                                     </script>
@@ -1157,6 +1170,43 @@
                                         form.style.display = "block";
                                     }
                                     </script>
+									
+									<script>
+									function deleteEvent() {
+									//deletes event clicked only works if 1 event is at scheduled time
+										var clickedCell = document.getElementById("infoCell").innerHTML;
+										var event = document.getElementById(clickedCell).innerHTML;
+										var connected = true;
+										var currentCell = clickedCell;
+										while(connected) {
+											currentCell = parseInt(currentCell) - 1;
+											if(document.getElementById(currentCell).innerHTML == event) {
+												document.getElementById(currentCell).innerHTML = "";
+												document.getElementById(currentCell).classList.remove('selected');
+												eventArray[currentCell] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []};
+											}
+											else {
+												connected = false;
+											}
+										}
+										connected = true;
+										currentCell = clickedCell;
+										while(connected) {
+											currentCell = parseInt(currentCell) + 1;
+											if(document.getElementById(currentCell).innerHTML == event) {
+												document.getElementById(currentCell).innerHTML = "";
+												document.getElementById(currentCell).classList.remove('selected');
+												eventArray[currentCell] = {numEvents: 0, eventNames: [], startTimes: [], endTimes: [], locations: [], descriptions: []};
+											}
+											else {
+												connected = false;
+											}
+										}
+										document.getElementById(clickedCell).innerHTML = "";
+                                        document.getElementById(clickedCell).classList.remove('selected');
+										hideDisplay();
+									}
+									</script>
                                     
                                 </head>
                                 
@@ -1652,7 +1702,24 @@
                                             <td id="288"></td>
                                             <td id="336"></td>
                                         </tr>
-                                    </table>         
+                                    </table>  
+									<div id="infoDisplay">
+										<p id="infoStart"> Start Time: <br> </p>
+										<br> 
+										<p id="infoEnd"> End Time: <br> </p>
+										<br>
+										<p id="infoName"> Event Name: <br> </p>
+										<br>
+										<p id="infoDescription"> Description: <br> </p>
+										<br>
+										<p id="infoLocation"> Location: <br> </p>
+										<br>
+										<p hidden id="infoCell"> </p>
+										<button type="button" onclick="hideDisplay()"> Cancel </button>
+										<br>
+										<br>
+										<button type="button" onclick="deleteEvent()"> Delete </button>
+									</div>									
                             </p>    
                                 </body>
                                 
@@ -1689,6 +1756,7 @@
                 var tempDay = toDay;
                 document.getElementById("w"+currentWeekDay).style.backgroundColor = "#346bef";
                 document.getElementById("w"+currentWeekDay).style.color = "white";
+				var deletecell = 0;
         </script>
  
     </div>
