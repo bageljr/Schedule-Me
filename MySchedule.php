@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>ScheduleMe - Beta</title>
+    <title>ScheduleMe - My Schedule</title>
     <!-- Bootstrap Core CSS -->
     <link href="./static/lib/css/bootstrap.min.css" rel="stylesheet">
     <!-- MetisMenu CSS -->
@@ -42,7 +42,7 @@
     <![endif]-->
     <style type="text/css">
     body {
-        background: rgb(70,78,94 );
+    
     }
     
     <style> svg {
@@ -203,8 +203,8 @@
 
 <body class="application pushmenu-push">
     <div id="wrapper">
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;background-color: #576172">
-            <a class="navbar-brand dashboard-title" href="index.html" style="color:rgb(51,107,239);">ScheduleMe</a>
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;">
+            <a class="navbar-brand dashboard-title" href="index.html" style="color:rgb(67,120,180);">ScheduleMe</a>
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -258,9 +258,7 @@
                             ?>
                           </ul>
                         </li>
-                        <li>
-                            <a href=""><i class="fa fa-signing fa-fw"></i>My Friends</a>
-                        </li>
+                        
                         <li>
                             <a href=""><i class="fa fa-gear fa-fw"></i>Settings</a>
                         </li>
@@ -280,7 +278,7 @@
         <!-- MAIN SECTION OF PAGE -->
         <div id="page-wrapper" style="height: 1425px; width: 1000px">
             <br>
-            Welcome, <?php echo $_POST['username'] ?> !
+            Welcome, <?php echo $_POST['username'] ?>!
             <div class="row">
                 <p id="currenttime" align="right" padding-left="0cm" display="inline-block"></p>
             </div>
@@ -443,7 +441,7 @@
                         </div>
                         <!-- /.panel-heading -->
                         <!-- MY CALENDAR BODY BEGINS -->
-                        <div class="panel-body" style="height:800px; overflow-y:auto">
+                        <div class="panel-body" style="height: 800px; overflow-y: auto;">
                             <!--<ul id="customer-timeline">
                                 </ul>-->
                             <html>
@@ -472,7 +470,8 @@
                                         }
 
                                         td.selected {
-                                            background-color: red;
+                                            background-color: rgb(67,120,180);
+                                            color: white;
                                         }
                                         
                                         td.selected1 {
@@ -1907,9 +1906,9 @@
         document.getElementById("currenttime").innerHTML =  currtime;
 
         // Last Updated Time
-        var lastupdated = new Date(1499452848577);
+        var lastupdated = new Date(1512410580);
         var lastupdatedtime = dateFormat(lastupdated, "dddd, mmmm dS, yyyy, h:MM:ss TT");
-        document.getElementById("lastupdatedtime").innerHTML = "Last Updated: " + lastupdatedtime;
+        
     </script>
 </body>
 </htMy Calendarml>
