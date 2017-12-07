@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>ScheduleMe - Beta</title>
+    <title>ScheduleMe - Group Schedule</title>
     <!-- Bootstrap Core CSS -->
     <link href="./static/lib/css/bootstrap.min.css" rel="stylesheet">
     <!-- MetisMenu CSS -->
@@ -42,7 +42,6 @@
     <![endif]-->
     <style type="text/css">
     body {
-        background: rgb(70,78,94 );
     }
     
     <style> svg {
@@ -199,8 +198,8 @@
 
 <body class="application pushmenu-push">
     <div id="wrapper">
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;background-color: #576172">
-            <a class="navbar-brand dashboard-title" href="index.html" style="color:rgb(51,107,239);">ScheduleMe</a>
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;">
+            <a class="navbar-brand dashboard-title" href="index.html" style="color:rgb(67,120,180);">ScheduleMe</a>
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -221,7 +220,7 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="MySchedule.php?username="<?php echo $userName ?><i class="fa fa-user fa-fw"></i>My Calendar</a>
+                            <a href="MySchedule.html"><i class="fa fa-user fa-fw"></i>My Calendar</a>
                         </li>
                         <!--<li>
                             <a href="#"><i class="fa fa-users fa-fw"></i>My Groups<span class="fa arrow"></span></a>
@@ -282,9 +281,9 @@
             </div>
             <!-- /.row -->
                 <div class="col-lg-8">
-                    <div class="panel panel-default" id="svg" style="height: 1365px; width: 833px">
+                    <div class="panel panel-default" id="svg" style="width: 833px">
                         <div class="panel-heading">
-                            <i class="fa fa-calendar fa-fw"></i> "<?php echo $_GET['groupName'] ?>" Group Calendar
+                            <i class="fa fa-calendar fa-fw"></i>"<?php echo $_GET['groupName']?>" Group Calendar
                             <div class="pull-right">
                                 <!--<button onclick = "displayForm()" type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                         New Event
@@ -438,7 +437,7 @@
                         </div>
                         <!-- /.panel-heading -->
                         <!-- MY CALENDAR BODY BEGINS -->
-                        <div class="panel-body">
+                        <div class="panel-body" style="height: 800px; overflow-y: auto;">
                             <!--<ul id="customer-timeline">
                                 </ul>-->
                             <html>
@@ -471,48 +470,48 @@
                                         }
 
                                         td.selected0 {
-                                            background-color: #00ff00;
+                                            background-color: #2DCC40;
                                         }
                                         
                                         
                                         td.selected9 {
-                                            background-color: #ff6600;
+                                            background-color: #F96835;
                                         }
                                         
                                         td.selected8 {
-                                            background-color: #ff9933;
+                                            background-color: #F48E34;
                                         }
                                         
                                         td.selected7 {
-                                            background-color: #ffcc00;
+                                            background-color: #EFB233;
                                         }
                                         
                                         td.selected6 {
-                                            background-color: #ffff00;
+                                            background-color: #EAD432;
                                         }
                                         
                                         td.selected5 {
-                                            background-color: #ccff33;
+                                            background-color: #D6E532;
                                         }
                                         
                                         td.selected4 {
-                                            background-color: #99ff33;
+                                            background-color: #ADE031;
                                         }
                                         
                                         td.selected3 {
-                                            background-color: #66ff33;
+                                            background-color: #86DB30;
                                         }
                                         
                                         td.selected2 {
-                                            background-color: #33cc33;
+                                            background-color: #61D62F;
                                         }
                                         
                                         td.selected1 {
-                                            background-color: #00cc00;
+                                            background-color: #3DD12E;
                                         }
 
                                         td.selected10 {
-                                            background-color: #ff0000;
+                                            background-color: #FF4036;
                                         }
 
                                         
@@ -696,7 +695,7 @@
                                             }
                                             for (i=0; i<(endCell-startCell); i++) {
                                                 var cell = parseInt(startCell) + i; 
-                                                document.getElementById(cell).innerHTML = eventName;
+                                                //document.getElementById(cell).innerHTML;
                                                 document.getElementById(cell).classList.add('selected');
                                             }
                                             
@@ -710,7 +709,7 @@
                                             for (i=0; i<(endCell-startCell); i++) {
                                                 var cell = parseInt(startCell) + i;
                                                 if (eventArray[cell-1].numEvents == 0) {
-                                                    document.getElementById(cell).innerHTML = eventName;
+                                                    //document.getElementById(cell).innerHTML = eventName;
                                                     document.getElementById(cell).classList.add('selected1');
                                                     eventArray[cell-1].eventNames[0] = eventName;
                                                     eventArray[cell-1].startTimes[0] = startDate;
@@ -1898,4 +1897,4 @@
     </script>
 </body>
 
-</htMy Calendarml>
+</html>
