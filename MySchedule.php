@@ -252,7 +252,7 @@
 
                                 while($row = $result->fetch_assoc())
                                 {
-                                  echo '<li><a href=Group2.php?username='.$userName.'&groupName='.$row['groupname'].'>'.$row['groupname'].'</a></li>';
+                                  echo '<li><a href=MyGroup.php?username='.$userName.'&groupName='.$row['groupname'].'>'.$row['groupname'].'</a></li>';
                                   //echo "Here";
                                 }
                             ?>
