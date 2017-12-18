@@ -1,6 +1,5 @@
 # ScheduleMe
-ScheduleMe
-
+# Making group scheduling easier.
 Nolan Jelinski - Department of Computing Sciences - Villanova University - Villanova, Pennsylvania - njelinsk@villanova.edu
 
 Matthew O’Neill - Department of Computing Sciences - Villanova University - Villanova, Pennsylvania - moneil32@villanova.edu
