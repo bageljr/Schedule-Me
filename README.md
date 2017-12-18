@@ -1,8 +1,10 @@
-# Schedule-Me
+# ScheduleMe
 ScheduleMe
 
 Nolan Jelinski - Department of Computing Sciences - Villanova University - Villanova, Pennsylvania - njelinsk@villanova.edu
+
 Matthew O’Neill - Department of Computing Sciences - Villanova University - Villanova, Pennsylvania - moneil32@villanova.edu
+
 Connor Powers - Department of Computing Sciences - Villanova University - Villanova, Pennsylvania - cpower11@villanova.edu
 
 I. Introduction
