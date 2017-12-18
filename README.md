@@ -1,22 +1,22 @@
 # ScheduleMe
-### Making group scheduling easier.
+##### Making group scheduling easier.
 Nolan Jelinski - Department of Computing Sciences - Villanova University - Villanova, Pennsylvania - njelinsk@villanova.edu
 
 Matthew O’Neill - Department of Computing Sciences - Villanova University - Villanova, Pennsylvania - moneil32@villanova.edu
 
 Connor Powers - Department of Computing Sciences - Villanova University - Villanova, Pennsylvania - cpower11@villanova.edu
 
-I. Introduction
+## I. Introduction
 
 ScheduleMe is a web application that aids groups in scheduling events. The application allows users to upload their personal schedules, join groups, view group availability, and schedule group events. ScheduleMe uses basic web technologies to display a user’s or group’s schedule and a basic MySQL database to store events, user information, and group information.
 
-II. Background
+## II. Background
 
 College students tend to belong to many different clubs, groups, and activities, so it can be hard for a group to find a good time for all group members to meet. In one case, a Villanova basketball manager found it hard to schedule fifteen student managers for daily practice and activities. ScheduleMe was designed to make group scheduling more efficient and pain-free. The user interface is simple to use and the visualization techniques implemented were designed to make the scheduling process efficient.
 
-III. Methodology
+## III. Methodology
 
-A. Front-end Calendar
+### A. Front-end Calendar
 
 The front-end calendar operates using an HTML template. The portal makes PHP calls to the database to load a user’s schedule data. It also has page functionality using JavaScript. The login page is a form that checks the user’s information with the database, and if successful, logs the user in and redirects them to their personal schedule. The user’s personal schedule first loads scheduled events from the database. The schedule itself is an HTML table, and it calculates which cell belongs to an event based on the start and end time provided by the database.
 
@@ -30,7 +30,7 @@ The functionality of clicking on the schedule changes if the first cell selected
 
 Finally, there is also a group option that allows the user to see the groups that they belong. When one of these is selected, it redirects them to the schedule for that group. On the page load for a group, all of the events for the users in the group are found for each cell. Then this number is divided by the total number of people in that group. This fraction is rounded and multiplied by ten to be put on a one to ten scale. This scale creates a spectrum from light green to dark red, which is used to populate the cells with color. This allows the user to visually see what times are the best to schedule group events. The user also has the option to schedule an event from the groups page. When this is done, the event is scheduled for every group member in database.
 
-B. Back-end Database
+### B. Back-end Database
 
 A MySQL database is used to store the data users enter into their schedules. There are two main tables: “events” and “groups.” Records in the “events” table store information about events, such as location, description and the start and end times. Every time an event is created, it is added to this table and the name of the user who created the event is added to the “username” column of the “event” database. This allows for filtering since the event table can be very large.
 
@@ -42,7 +42,7 @@ The master group schedule page is populated in a similar way, but instead of sel
 
 Finally, users can create events for the entire group from this page. In order to schedule an event for the group, users select a time slot and a separate script adds events  at that time and with the event metadata for each user in the same way that users create their own events. This feature adds the event to every group member’s calendar.
 
-IV. Results
+## IV. Results
 
 ScheduleMe was a positive experience for the entire team. Not only did it help the team members put skills like database programming and web programming to work outside of a classroom environment, but it also taught other invaluable skills. When working on an independent project like this, an important to skill to have is the ability to learn. All of the team members encountered problems that they had never had to solve before. Some of the problems were purely from lack of experience, like working with Git and Trello and working on a software engineering team with many moving parts. As the team got used to assigning work and joining individual tasks together to complete the full software, the software development moved more efficiently.
 
@@ -50,14 +50,14 @@ Some of the other issues were more specific. Setting up a web server proved diff
 
 This project was ultimately a success as it provided the team with valuable experience in programming, working as a team, and coming up with a plan to accomplish a goal by using software. At the beginning (and even the midpoint) of the development lifecycle, the team was unsure how to complete some of the goals of ScheduleMe, such as the coloring feature, but by the end the team had succeeded in most goals set forth from the beginning.
 
-V. Conclusion
+## V. Conclusion
 
 ScheduleMe is a robust application that provides a service not currently offered. There are many potential uses for the application in its current state, and even more uses with further work. It allows users to make their own schedules, join a group with other group members, and compile a group schedule for them that is easy to understand and comprehend. This makes scheduling for groups, especially large groups, much easier compared to any other application. There are also further possibilities, such as scheduling selectively. For example, if there are ten group members but only two are needed at a time, possibly for work shifts, the application could automatically schedule based on availability and other constraints. Even in its current iteration, ScheduleMe is a useful application that is easy to use for personal and group use.
 
-Acknowledgment
+### Acknowledgment
 
 The team would like to thank Dr. Ed Kim for his help and guidance throughout this project. With his insight, we challenged oursleves to build a robust application that touches on various aspects of the computer science cirriculum.
 
-References
+### References
 
 Welling, L. and Thomson, L. (2013). PHP and MySQL Web development. Upper Saddle River, NJ: Addison-Wesley.
